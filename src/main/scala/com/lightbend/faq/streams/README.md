@@ -5,6 +5,11 @@ being processed one at a time rather than in large batches.
  
 A stream represents a sequence of objects (usually bytes, but not necessarily so), which can be accessed in sequential order
 
+It is best to think of a stream in terms of the operators it offers (which vary from implementation to implementation, 
+but have a lot in common)
+
+Stream processing lets us model systems that have state without ever using assignment or mutable data. 
+
 Streams are processed differently from batch data, normal functions cannot operate on streams as whole as 
 they have potentially unlimited data and formally streams are codata(potentially unlimited) 
 
@@ -29,4 +34,16 @@ Typical operations on a stream:
 5. Write several bytes from an array/list into the stream
 6. Skip bytes from the stream (this is like read, but you ignore the data)
 7. Push back bytes into an input stream
+
+
+A particular stream might support reading(in which case it is an "Input Stream") writing ("Output Stream") or both. 
+
+Stream is a useful abstraction because it can describe files(which are really arrays) but also input/output sockets,
+serial ports etc
+
+There are files streams in which you open a file and can read the stream or write to it. 
+There are network streams where reading from and writing to the stream reads from and writes to an underlying established network connection. 
+
+
+Another common thing you might find is textual streams that allow you to write strings instead of bytes
 
