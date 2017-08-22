@@ -50,7 +50,7 @@ Another common thing you might find is textual streams that allow you to write s
 
 Anything can be a stream, variables, user input, properties, caches, data structures. 
 
-Most common functions do ```combine, create``` and ```filter``` any of these streams
+Most common functions do ```combine```, ```create``` and ```filter``` any of these streams
 
 1. A stream ca be used as an input to another one
 2. Multiple streams can be used as inputs to another stream
