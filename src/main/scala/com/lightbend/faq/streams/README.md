@@ -47,3 +47,19 @@ There are network streams where reading from and writing to the stream reads fro
 
 Another common thing you might find is textual streams that allow you to write strings instead of bytes
 
+
+Anything can be a stream, variables, user input, properties, caches, data structures. 
+
+Most common functions do ```combine, create``` and ```filter``` any of these streams
+
+1. A stream ca be used as an input to another one
+2. Multiple streams can be used as inputs to another stream
+3. You can merge two streams. 
+4. You can filter a stream to get another one that has only events you are interested in. 
+5. You can map data values from one stream to another new one. 
+
+
+A stream is a sequence of ongoing events ordered in time. 
+It can emit 3 different things; a value of some type, an error or a completed signal. 
+
+
