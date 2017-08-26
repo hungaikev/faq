@@ -152,6 +152,8 @@ Materialization is the act of allocating resources to the stream. It occurs when
 
 Running the stream results in Materialized Values being produced. 
 
+Materialized values and their type originate i a Source and are propagated through all stages of a stream to a sink.  
+
 Each stage is capable of producing a single materialized value. 
 
 Materialized values are separate from the elements being **produced/transformed/consumed/ ** by the stage. 
@@ -169,7 +171,13 @@ value
 An akka stream is only going to run if it is closed, which is to say that it has a beginning and an end and therefore nothing outside the flow
 can peek into it. 
 
-Akka Streams allows to materialize (or keep) either the **left** or the **right** value of a stream
+Akka Streams allows to materialize (or keep) either the **left** or the **right** value of a stream.
+
+Akka streams are back pressured by default, but it is possible to alter this behaviour. 
+
+```Kill Switches``` - This is an object used externally to stop the materialization of a stream. 
+
+
 
 
 
