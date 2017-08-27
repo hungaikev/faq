@@ -22,3 +22,22 @@
 
 
 #### Using a supervisor strategy on a stream. 
+
+
+#### Testing streaming-data systems
+
+I often find myself writing tests to validate the outputs of streams, be they data transformations, writes to a database,
+or updates to intermediate streaming-data calculations. 
+
+These tests focus on the business logic and the correctness of the output. 
+
+But what if no elements are passed through the stream within the expected time frame, 
+perhaps the assertions in the test are never even applied? Idle timeouts are great for codifying and asserting expectations regarding messaging latency, 
+testing for this in addition to the correctness of the output, when designing complex functional tests for a distributed system
+
+
+#### Batching Requests 
+
+#### Rate Limiting Requests
+
+#### Throttling Requests
