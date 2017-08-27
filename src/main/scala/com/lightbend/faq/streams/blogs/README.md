@@ -15,3 +15,10 @@
  2) Transform and merge data into one record 
  3) Make web service call (to machine learning API)
  4) Write files or database inserts
+
+
+
+#### Using a dedicated dispatcher to run a stream.
+
+
+#### Using a supervisor strategy on a stream. 
