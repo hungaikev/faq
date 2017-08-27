@@ -31,7 +31,7 @@ Streams are an abstraction used when reading or writing files, or communicating 
 A byte stream is a sequence of bytes. 
 
 
-#### Typical operations on a stream: 
+### Typical operations on a stream: 
 
 1. Read one byte. Next time you read, you will get the next byte and so on. 
 2. Read several bytes from the stream into an array/list
@@ -70,14 +70,14 @@ A stream is a sequence of ongoing events ordered in time.
 It can emit 3 different things; a value of some type, an error or a completed signal. 
 
 
-#### Examples: 
+### Examples: 
 
 1. Twitter "firehose" of Tweets
 2. Live video/audio streams 
 3. Data from a fitness tracker
 
 
-#### Back Pressure 
+### Back Pressure 
 
 Implemented using pull/push mechanism. 
 
@@ -88,7 +88,7 @@ Publishers receive demand and push data (if available) downstream.
 Publishers are forbidden from pushing more than the demand. 
 
 
-#### Akka streams relationship to Actors 
+### Akka streams relationship to Actors 
 
 Actors consume streams of data in the form of messages. 
 
@@ -99,7 +99,7 @@ Akka Streams provides a higher level api for stream processing, backed by akka a
 Akka streams provide statically typed guarantees that prevent wiring errors. 
 
 
-#### What is an Akka Stream 
+### What is an Akka Stream 
 
 Data flows through a chain of processing stages. 
 
@@ -111,7 +111,7 @@ By default stages are fused together to run synchronously inside a single actor 
 in separate actors. 
 
 
-#### Linear Streams 
+### Linear Streams 
 
  File ~>  Source.fromFile ~> Flow.map(transform) ~> Sink.foreach ~> Database
  
@@ -129,7 +129,7 @@ in separate actors.
  Linear streams are often sufficient for most use cases. 
  
  
- #### Graphs 
+ ### Graphs 
  
  Source ~> Junction(fan in)  ~> Junction(fan in) ~> Sink 
  Source ~>                   ~> 
@@ -141,12 +141,12 @@ in separate actors.
 Graphs allow us to build complex flows of data with multiple inputs and outputs. 
 
 
-#### Graph Stages are Templates 
+### Graph Stages are Templates 
 
 **Sources/Flows/Sinks/Junctions** are immutable re-usable templates. They contain instructions on how to produce/transform/consume data.
 By themselves they do nothing. In order to start the flow of data the graph must first be materialized. 
 
-#### Materialization
+### Materialization
 
 Materialization is the act of allocating resources to the stream. It occurs when all stages in the stream are connected and the stream is run. 
 
@@ -178,23 +178,8 @@ Akka streams are back pressured by default, but it is possible to alter this beh
 ```Kill Switches``` - This is an object used externally to stop the materialization of a stream. 
 
 
-                                                                                             
-```Flow``` - Basically an ordered collection of transformations that act upon the data from the ```Source``` consists of exactly one 
-output and one input. It takes 3 type parameters 
 
-1. For the input data type 
-2. For the output
-3. For the auxiliary type
 
-```scala
- val flowCascade: Flow[Int, Boolean, NotUsed] = Flow[Int].filter((num => num > 2)).map((num) => num % 2 == 0)
-```
-
-```Sink``` - The receiver of the date after its transformed by the ```Flow``` consists of exactly one input. It is the subscriber of the data
-sent/processed by a ```Source```. Usually it outputs its input to some system IO( TCP port, console, file, etc) Creating the side effect
-of our application working. It is basically a ```Flow``` which uses a ```foreach``` or ```fold``` function to run a procedure(function with 
-no return value, Unit) over its input elements and propagate the auxiliary value(eg a ```Future``` that will complete when it finishes writing the input
-to a file or console)
 
 
 
