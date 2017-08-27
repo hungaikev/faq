@@ -177,9 +177,7 @@ Akka streams are back pressured by default, but it is possible to alter this beh
 
 ```Kill Switches``` - This is an object used externally to stop the materialization of a stream. 
 
-```Source``` -  as the name suggests the source of the data, consists of exactly one output. 
-```Source``` takes two type parameters. The first one represents the type of data it emits and the second one is the type of 
-the auxiliary value it can produce when ran/materialized. If we do not produce any we use the ```NotUsed``` type provided by akka. 
+
                                                                                              
 ```Flow``` - Basically an ordered collection of transformations that act upon the data from the ```Source``` consists of exactly one 
 output and one input. It takes 3 type parameters 
