@@ -1,4 +1,4 @@
-### Sources 
+## Sources 
 
 ```Source``` -  as the name suggests the source of the data, consists of exactly one output. 
 ```Source``` takes two type parameters. The first one represents the type of data it emits and the second one is the type of 
@@ -23,7 +23,7 @@ If there is no demand, then the source is forbidden from pushing data.
 
 The source will have to deal with incoming data until demand resumes. 
 
-#### **Empty Sources**
+### **Empty Sources**
 
 ```scala
 val source: Source[String, NotUsed] = Source.empty[String]
@@ -38,7 +38,7 @@ val source: Source[String, NotUsed] = Source.empty[String]
 
 
 
-#### **Sources from single elements**
+### **Sources from single elements**
 
 ```scala
 val source: Source[String, NotUsed] = Source.single("Hello World")
@@ -64,7 +64,7 @@ val source3: Source[String, Cancellable] = Source.tick (
 * Similar to ```Source.repeat``` except the element is pushed on a time schedule. 
 * If there is no demand(i.e back pressure) no tick will be pushed. That tick will be lost. 
 
-#### **Sources from Iterables**
+### **Sources from Iterables**
 
 ```scala
 val source : Source[Int, NotUsed] = Source(1 to 10)
@@ -74,7 +74,7 @@ val source : Source[Int, NotUsed] = Source(1 to 10)
 * Elements are taken from the Iterable and pushed downstream whenever there is demand. 
 * The stream is completed if there is no more data in the Iterable. 
 
-#### **Sources from Iterators**
+### **Sources from Iterators**
 
 ```scala
 val source: Source[Int, NotUsed] = Source.fromIterator {
@@ -95,7 +95,7 @@ val source2: Source[Int, NotUsed] = Source.cycle {
 * Similar to ```Source.fromIterator```, but the iterator is infinitely repeated. 
 * When ```hasNext``` return false, the Iterator is recreated and consumed again. 
 
-#### **Stateful Sources**
+### **Stateful Sources**
 
 ```scala
 val countTo100: Source[Int, NotUsed] = Source.unfold(0) {
@@ -111,7 +111,7 @@ val countTo100: Source[Int, NotUsed] = Source.unfold(0) {
 ```Source.unfoldAsync```
 * Similar to unfold, but the function returns a Future of an Option
 
-#### **Sources from Actors**
+### **Sources from Actors**
 
 ```scala
 case class Message(value: String)
@@ -127,7 +127,7 @@ val source: Source[Message, ActorRef] = Source.actorRef[Message] (
 * ```bufferSize``` - Determines the maximum capacity of the buffer. 
 * ```overflowStrategy``` - Determines what to d if the buffer overflows. 
 
-#### **Sources from Files**
+### **Sources from Files**
 ```scala
 val byteSource: Source[ByteString, Future[IOResult]] = 
  FileIO.fromPath (
