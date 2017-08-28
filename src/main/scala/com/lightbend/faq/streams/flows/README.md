@@ -28,6 +28,24 @@ Flows can propagate back pressure upstream by reducing or stopping demand. Alter
 
 ### Flows to map elements 
 
+```scala
+ val double: Flow[Int, Int, NotUsed] = Flow[Int].map(_ * 2)
+ 
+ val double2: Flow[Int].mapAsync(parrallelism = 4) {i => 
+  Future{i * 2 }
+ }
+```
+
+```Flow.map```
+* Transforms the stream by applying the given function to each element.
+
+```Flow.mapAsync```
+* Accepts a function that returns a future but still guarantees ordering. 
+* Parallelism defines the amount of parallelism to use when resolving the futures. 
+
+```Flow.mapAsyncUnordered```
+* Accepts a function that returns a future and does not guarantee ordering. 
+
 ### Flows to flatten elements 
 
 ### Flows to group elements
@@ -40,9 +58,6 @@ Flows can propagate back pressure upstream by reducing or stopping demand. Alter
 
 
 ### Flows to filter elements 
-
-
-### Flows to map elements 
 
 
 ### Flows to limit  elements by time
