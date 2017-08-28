@@ -21,3 +21,90 @@
 and emits one to each output
 
 4. ```Unzip[A,B]``` - (1 input, 2 outputs) Splits a stream of ```Tuple2[A,B]``` into two streams of A and B 
+
+
+### Closed Graphs
+
+ClosedShape indicates no open inputs or outputs. 
+
+```scala
+ RunnableGraph.fromGraph(GraphDSL.create() {
+  implicit builder: GraphDSL.Builder[NotUsed] => 
+  import GraphDSL.Implicts._ 
+  val source = Source(1 to 10)
+  val sink = Sink.foreach(println)
+  val bcast = builder.add(Broadcast[Int](2))
+  val merge = builder.add(Merge[Int](2))
+  
+  val f1, f2, f3, f4 = Flow[Int].map(_ + 10)
+  
+  source ~> f1 ~> bcast ~> merge ~> f4 ~> sink
+                  bcast ~> merge
+    ClosedShape
+ }).run()
+```
+
+### Partial Graphs 
+
+PartialGraphs can be in the shape of linear Graph elements. 
+
+```scala
+ val source: Source[Int, NotUsed] = Source.fromGraph(
+  GraphDSL.create() {
+   implicit builder: GraphDSL.Builder[NotUsed] => 
+    import GraphDSL.Implicits._ 
+    val source1, source2 = Source(1 to 10)
+    val merge = builder.add(Merge[Int](2))
+    
+    source1 ~> merge
+    source2 ~> merge
+    
+    SourceShape(merge.out)
+  }
+ )
+```
+
+Partial Graphs can be created in the shape of Junctions(eg Fan In, Fan Out)
+
+```scala
+val dualPortFanIn = GraphDSL.create() {
+ implicit builder: GraphDSL.Builder[NotUsed] => 
+  val merge = builder.add(Merge[Int](2))
+  UniformFanInShape[Int,Int] (
+   merge.out, 
+   merge.in(0),
+   merge.in(1)
+  )
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
