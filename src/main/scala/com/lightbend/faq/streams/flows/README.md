@@ -128,15 +128,61 @@ Flows can propagate back pressure upstream by reducing or stopping demand. Alter
  
 ### Flows to combine sources
 
+```scala
+val zipWithIndex: Flow[String, (String,Int), NotUsed] = 
+  Flow[String].zip {
+    SOurce.fromIterator(() => Iterator.from(0))
+  }
+```
+
+```Flow.zip```
+* Combine the incoming elements with elements from another Source
+* Result is emitted as a tupples of both values. 
+
 
 ### Flows to flatten sources
+
+```scala
+val double: Flow[Int,Int, NotUsed] = 
+  Flow[Int].flatMapConcat(i => Source(Iterable(i,i)))
+  
+val double2: Flow[Int,Int, NotUsed] = 
+  Flow[Int].flatMapMerge( 
+  i => Source(Iterable(i,i)),
+  breadth = 2
+  )
+```
+
+```Flow.flatMapConcat```
+* Similar to ```mapConcat``` but operates on Sources, rather than Iterables
+* Transforms data into a collection that is flattened into the stream. 
+Substreams are consumed in sequence which preserves ordering 
+
+
+```Flow.flatMapMerge```
+
+* Like ```mapConcat```, but substreams are consumed simultaneously. Order therefore is not guaranteed. 
+* Breadth indicates, how many substreams to consume at a time
 
 
 ### Flows to buffer elements 
 
+```scala
+ val flow: Flow[Int,Int,NotUsed] = 
+   Flow[Int].buffer(100, OverflowStrategy.backpressure)
+```
 
-### Flows to map elements 
+```Flow.buffer```
 
+* Buffer incoming elements in order to smooth out inconsistencies in flow rate. 
+* Includes various overflow strategies including 
+
+1. ```backpressure``` - Applies normal backpressure when the buffer is full
+2. ```dropHead``` - Drops the oldest element in the buffer to make room for new elements
+3. ```dropTail``` - Drops the newest element in the buffer to make room for new elements
+4. ```dropNew``` - Drops the new element leaving the buffer unchanged
+5. ```dropBuffer``` - Drops all elements in the buffer to make room for new elements. 
+6. ```fail``` - Stream completes with a failure
 
 ### Flows for slow consumers/producers
 
