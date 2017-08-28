@@ -94,10 +94,15 @@ Flows can propagate back pressure upstream by reducing or stopping demand. Alter
 * Unlike fold, scan will emit each new completed result. 
  
 
-### Flows to map elements 
-
-
 ### Flows to filter elements 
+
+```Flow.filter```
+* Filter elements in/out of the stream 
+
+```Flow.collect```
+* Apply a partial function to elements in the stream 
+* Matched elements are transformed by the function 
+* Unmatched elements are dropped. 
 
 
 ### Flows to limit  elements by time
