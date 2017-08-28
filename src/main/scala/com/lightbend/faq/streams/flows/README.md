@@ -47,6 +47,14 @@ Flows can propagate back pressure upstream by reducing or stopping demand. Alter
 * Accepts a function that returns a future and does not guarantee ordering. 
 
 ### Flows to flatten elements 
+```scala
+ val words: Flow[String, String, NotUsed] = Flow[String].mapConcat(str => str.split("\\s")).toVector
+ 
+```
+
+```Flow.mapConcat```
+* Transforms data into a collection that is flattened into the stream. 
+* Similar to flatMap on a collection
 
 ### Flows to group elements
 
