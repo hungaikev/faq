@@ -62,5 +62,21 @@ Flows can propagate back pressure upstream by reducing or stopping demand. Alter
 
 ### Flows for slow consumers/producers
 
+```Flow.expand```
+* Extrapolates additional values from the incoming elements to fill gaps when the consumer is faster than the producer. 
+
+```Flow.batch```
+* Groups elements into a batch to be consumed downstream if the producer is faster than the consumer. 
+
+```Flow.conflate```
+* Create a summary of multiple elements to be consumed downstream if the producer is faster than the consumer. 
+
 
 ### Flows to log elements
+
+```Flow.log```
+* Write the elements in the stream to a log while passing them to the next stage. 
+* A provided name is included in each log statement. 
+* Optionally, an extract function can be provided that can extract information from the element to be logged. 
+* Requires an implicit logging adapter 
+* By default, elements are logged on debug level, but can be configured using ```withAttributes```
