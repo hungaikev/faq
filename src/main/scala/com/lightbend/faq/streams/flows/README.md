@@ -106,6 +106,24 @@ Flows can propagate back pressure upstream by reducing or stopping demand. Alter
 
 
 ### Flows to limit  elements by time
+
+```scala
+ val oneSecondOfData: Flow[Int, Int, NotUsed] = Flow[Int].takeWithin(1.second)
+ 
+ val skipOneSecondOfData: Flow[Int, Int, NotUsed] = Flow[Int].dropWithin(1.second)
+ 
+ val groupBySecond: Flow[Int, Seq[Int], NotUsed] = Flow[Int].groupedWithin(10, 1.second)
+ 
+```
+
+```Flow.takeWithin```
+* Take elements from the stream for the given duration, then terminate
+
+```Flow.dropWithin```
+* Drop data for the specified period of time, then proceed with the rest.
+
+```Flow.groupedWithin```
+* Group elements by the given number or time period, whichever comes first. 
  
  
 ### Flows to combine sources
