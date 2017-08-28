@@ -74,6 +74,24 @@ Flows can propagate back pressure upstream by reducing or stopping demand. Alter
 
 
 ### Stateful Flows
+
+```scala
+ val computeSum: Flow[Int, Int, NotUsed] = Flow[Int].fold(0) {
+  case (sum, value) => sum + value
+ }
+ val accumulate: Flow[Int, Int, NotUsed] = Flow[Int].scan(0) {
+  case (accumulator, value) => accumulator + value
+ }
+```
+
+```Flow.fold```
+
+* Allows a stateful transformation by passing previous state into the next iteration. 
+* Fold will only emit the result when the upstream completes
+
+```Flow.scan```
+* Allows for stateful transformations by passing previous state into the next iteration. 
+* Unlike fold, scan will emit each new completed result. 
  
 
 ### Flows to map elements 
