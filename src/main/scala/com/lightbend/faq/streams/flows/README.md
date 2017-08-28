@@ -58,6 +58,20 @@ Flows can propagate back pressure upstream by reducing or stopping demand. Alter
 
 ### Flows to group elements
 
+```scala
+ val groupsOf10: Flow[Int, Seq[Int], NotUsed] = Flow[Int].grouped(10)
+ 
+ val slidingWindowOf10: Flow[Int,Seq[Int], NotUsed] = Flow[Int].sliding(10, step =1)
+ 
+```
+
+```Flow.grouped```
+* Groups elements in the stream into fixed size batches
+
+```Flow.sliding```
+
+* Creates a sliding window over the elements steam
+
 
 ### Stateful Flows
  
