@@ -78,7 +78,7 @@ Any state accumulated by the stage will be cleared.
 ```scala
 
 val decider: Supervision.Decider = {
- case _: ArithmeticException => Supervision.resume 
+ case _: ArithmeticException => Supervision.Resume 
  case _ => Supervision.Stop 
 }
 

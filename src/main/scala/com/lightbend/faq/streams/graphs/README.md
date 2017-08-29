@@ -1,6 +1,9 @@
 ### Fan In Junctions 
 
-1. ```Merge[In]``` - (N inputs, 1 output) randomly selects from inputs and pushes to a single output
+1. ```Merge[In]``` - (N inputs, 1 output) randomly selects from inputs and pushes to a single output. 
+```Merge``` picks a signal randomly from one of many inputs and emits the event downstream. Variants are available such as 
+```MergePreferred```, which favours a particular inlet if events are available to consume on multiple incoming streams, and ```MergeSorted```, 
+which assumes the incoming streams are sorted and therefore ensures the outbound stream is also sorted.
 
 2. ```MergePreferred[In]``` - (N inputs, 1 output) similar to Merge, but one output is given higher priority over all others.
 
@@ -13,9 +16,17 @@
 
 ### Fan Out Junctions 
 
-1. ```Broadcast[T]``` - (1 input, N outputs) Incoming elements are emitted to all outputs. 
+1. ```Broadcast[T]``` - (1 input, N outputs) Incoming elements are emitted to all outputs. ```Broadcast``` ingests 
+events from one input and emits duplicated events across more than one output stream. An example usage for a broadcast 
+would be to create a side-channel, with events from one stream being persisted to a data store, 
+while the duplicated events are sent to another graph for further computation.
 
-2. ```Balance[T]``` - (1 input, N outputs) Incoming elements are emitted to one of the outputs (first available)
+2. ```Balance[T]``` - (1 input, N outputs) Incoming elements are emitted to one of the outputs (first available). 
+```Balance``` signals one of its output ports for any given signal, but not both. 
+According to the documentation, “each upstream element is emitted to the first available downstream consumer”. 
+This means events are not distributed in a deterministic fashion, with one output being signalled and then the other, 
+but rather whichever downstream subscriber happens to be available. This is a very useful fan-out function for high-throughput streams, 
+enabling graphs to be split apart and multiple instances of downstream subscribers replicated to handle the volume.
 
 3. ```UnzipWith[In, A, B, ....]``` - (1 input, N outputs) Uses a function to convert 1 input element into N output elements 
 and emits one to each output
