@@ -95,6 +95,10 @@ ClosedShape indicates no open inputs or outputs.
 
 PartialGraphs can be in the shape of linear Graph elements. 
 
+Graph is not closed, not runnable. 
+
+It just provides an abstraction and creates a simple Graph
+
 ```scala
  val source: Source[Int, NotUsed] = Source.fromGraph(
   GraphDSL.create() {
@@ -123,6 +127,28 @@ val dualPortFanIn = GraphDSL.create() {
    merge.in(1)
   )
 }
+```
+
+
+This example creates a Graph containing a "Flow" shape, that simply acts as a diamond internally 
+
+```scala
+val diamond: Graph[FlowShape[Int,Int], NotUsed] = GraphDSL.create() { implicit builder => 
+  val split = builder.add(Balance[Int](2))
+  val merge = builder.add(Merge[Int](2))
+  
+  import GraphDSL.Implicits._ 
+  
+  split ~> merge
+  split ~> merge
+  
+  FlowShape(split.in, merge.out)
+}
+
+val diamondGraph: Flow[Int, Int, NotUsed] = Flow.fromGraph(diamond)
+
+Source.single(5).via(diamondGraph).runForeach(println)
+
 ```
 
 
