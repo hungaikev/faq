@@ -2,6 +2,8 @@
 
 Using RestartFlow in a Stream.
 
+Failures vs Error handling in Akka Streams (Failure Handling, What is an error and what is a failure) 
+
 Akka Streams Best Practice for I/O and CPU actions
 
 Akka Streams - TLS & Framing

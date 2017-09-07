@@ -178,6 +178,36 @@ Akka streams are back pressured by default, but it is possible to alter this beh
 ```Kill Switches``` - This is an object used externally to stop the materialization of a stream. 
 
 
+### List of ```Sources``` and  ```Sink``` methods that have a materialized value different than ```NotUsed```
+
+For ```Sources```
+1. Source.queue : SourceQueueWithComplete[T]
+2. Source.tick: Cancellable
+3. Source.maybe: Promise[Option[T]]
+4. Source.asSubscriber: Subscriber[T]
+5. Source.actorPublisher: ActorRef
+6. Source.actorRef: ActorRef
+
+
+For ```Sink```
+
+1. Sink.ignore : Future[Done]
+2. Sink.foreach : Future[Done]
+3. Sink.foreachParallel : Future[Done]
+4. Sink.head : Future[T]
+5. Sink.last : Future[T]
+6. Sink.fold : Future[T]
+7. Sink.foldAsync : Future[T]
+8. Sink.reduce : Future[T]
+9. Sink.lazyInit : Future[T]
+10. Sink.headOption : Future[Option[T]]
+11. Sink.lastOption : Future[Option[T]]
+12. Sink.seq: Future[Seq[T]]
+13. Sink.asPublisher: Publisher[T]
+14. Sink.actorSubscriber: ActorRef
+15. Sink.queue: SinkQueueWithCancel[T]
+
+
 
 
 

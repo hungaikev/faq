@@ -33,6 +33,20 @@ object PartialGraphs extends App {
   firstPair.onComplete(_ => system.terminate())
 
 
-  case class PriorityWorkerPoolShape[In,Out] () extends Shape
+  case class PriorityWorkerPoolShape[In,Out] (
+                                             jobsIn: Inlet[In],
+                                             priorityJobsIn: Inlet[In],
+                                             resultsOut: Outlet[Out]
+                                             ) extends Shape {
+    override val inlets: collection.immutable.Seq[Inlet[_]] = jobsIn :: priorityJobsIn :: Nil
+    override val outlets: collection.immutable.Seq[Outlet[_]] = resultsOut :: Nil
+
+    override def deepCopy() = PriorityWorkerPoolShape (
+      jobsIn.carbonCopy(),
+      priorityJobsIn.carbonCopy(),
+      resultsOut.carbonCopy()
+    )
+
+  }
 
 }
