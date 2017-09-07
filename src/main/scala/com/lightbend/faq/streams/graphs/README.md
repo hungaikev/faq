@@ -1,3 +1,39 @@
+ ### Shapes 
+ Is a "box" with inputs and outputs, something that "processes" messages
+ 
+ 1. ```Shape```: The top abstract class for any shape. Contains an empty list of inputs and outputs
+ 2. ```SourceShape```: 0 -> 1 (a Source has a ```SourceShape``` and its the start of a Graph)
+ 3. ```SinkShape```: 1 -> 0 output only (a Sink has a ```SinkShape``` and its the end of a Graph)
+ 4. ```FlowShape```: 1 -> 1 
+ 5. ```BidiShape```: 2 -> 2 (1 -> 1 with 1 <- 1, bidirectional)
+ 6. ```FanOutShape```: 1 --> N (typically a Broadcast)
+ 7. ```FanInShape```: N --> 1 (typically a Merge)
+ 8. ```ClosedShape```: Shape with closed inputs and closed outputs that can be materialized
+
+```scala
+
+
+Source.fromFuture(Future { 2 })
+    .via(Flow[Int].map(_ * 2))
+    .to(Sink.foreach(println))
+    
+```
+    
+The code above is the same as the code below
+
+```
+val g: RunnableGraph[_] = RunnableGraph.fromGraph(GraphDSL.create() { implicit builder => 
+   val source = builder.add(Source.fromFuture(Future{ 2 }))
+   val multiply = builder.add(Flow[Int].map(- * 2))
+   val sink = builder.add(Sink.foreach(println))
+   
+   import GraphDSL.Implicits._ 
+   
+   source ~> multiply ~> sink 
+   ClosedShape
+})
+
+```
 ### Fan In Junctions 
 
 1. ```Merge[In]``` - (N inputs, 1 output) randomly selects from inputs and pushes to a single output. 

@@ -131,12 +131,18 @@ in separate actors.
  
  ### Graphs 
  
- Source ~> Junction(fan in)  ~> Junction(fan in) ~> Sink 
- Source ~>                   ~> 
- Source ~> Junction(fan out) ~> Flow ~> Sink 
- 
- 
+  Source ~> Junction(fan in)  ~> Junction(fan in) ~> Sink 
+  
+  Source ~>                   ~> 
+  
+  Source ~> Junction(fan out) ~> Flow ~> Sink 
+  
+
 **Junctions** - Branch points in the stream (eg ```fan in```, ```fan out```)
+
+```Outlet[T]```: for any shape that has outputs(.out or .out(n: Int))
+
+```Inlet[T]```: for any shape that has inputs(.in or .in(n: Int))
 
 Graphs allow us to build complex flows of data with multiple inputs and outputs. 
 
