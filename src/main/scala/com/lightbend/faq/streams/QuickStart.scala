@@ -8,7 +8,8 @@ import scala.concurrent._
 import scala.concurrent.duration._
 import java.nio.file.Paths
 
-import akka.stream.{ActorMaterializer, IOResult}
+import akka.event.Logging
+import akka.stream.{ActorMaterializer, Attributes, IOResult}
 import akka.stream.scaladsl.{FileIO, Flow, Keep, Sink, Source}
 
 /**
@@ -23,6 +24,15 @@ object QuickStart  extends App {
   implicit val ec = system.dispatcher
 
   val source: Source[Int, NotUsed] = Source(1 to 100)
+
+  val loggedSource = source.map{ elem => println(elem); elem}
+
+  val loggedS = source.log("before-map")
+    .withAttributes(Attributes.logLevels(onElement = Logging.WarningLevel))
+    .map(_ * 2)
+    .runWith(Sink.foreach(println))
+
+  // loggedSource.runWith(Sink.foreach(println))
 
   val factorials = source.scan(BigInt(1))((acc, next) => acc * next)
 

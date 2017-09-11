@@ -25,6 +25,11 @@ Like a Source, If there is no downstream demand, the flow must stop.
 
 Flows can propagate back pressure upstream by reducing or stopping demand. Alternatively Flows can drop data, or buffer data etc
 
+A flow can be 
+
+1. 1 -> 1 
+2. 1 -> N: Fanning out events(Broadcast) or acts as a load balancer( Balance)
+3. N -> 1: merge 1 event of several inputs into 1 event in output; or simply concat(3 inputs = 3 outputs)
 
 ### Flows to map elements 
 

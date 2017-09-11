@@ -21,7 +21,7 @@ Source.fromFuture(Future { 2 })
     
 The code above is the same as the code below
 
-```
+```scala 
 val g: RunnableGraph[_] = RunnableGraph.fromGraph(GraphDSL.create() { implicit builder => 
    val source = builder.add(Source.fromFuture(Future{ 2 }))
    val multiply = builder.add(Flow[Int].map(- * 2))
