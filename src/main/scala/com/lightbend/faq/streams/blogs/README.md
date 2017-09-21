@@ -36,8 +36,3 @@ perhaps the assertions in the test are never even applied? Idle timeouts are gre
 testing for this in addition to the correctness of the output, when designing complex functional tests for a distributed system
 
 
-#### Batching Requests 
-
-#### Rate Limiting Requests
-
-#### Throttling Requests
