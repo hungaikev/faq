@@ -17,13 +17,6 @@
  4) Write files or database inserts
 
 
-
-#### Using a dedicated dispatcher to run a stream.
-
-
-#### Using a supervisor strategy on a stream. 
-
-
 #### Testing streaming-data systems
 
 I often find myself writing tests to validate the outputs of streams, be they data transformations, writes to a database,
