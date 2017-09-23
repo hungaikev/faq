@@ -15,6 +15,8 @@
  2) Transform and merge data into one record 
  3) Make web service call (to machine learning API)
  4) Write files or database inserts
+ 
+#### Moving Data from Cassandra to s3 in a compressed format and then back to Cassandra.
 
 
 #### Testing streaming-data systems
@@ -29,3 +31,13 @@ perhaps the assertions in the test are never even applied? Idle timeouts are gre
 testing for this in addition to the correctness of the output, when designing complex functional tests for a distributed system
 
 
+
+
+
+
+
+
+After getting started with actors and welcoming the benefits of this approach, 
+it is not uncommon for people to encounter traditional concurrent-programming and distributed-systems 
+problems—related to flow control, out-of-memory exceptions, or poor performance—which can be somewhat discouraging. 
+This is usually when people discover the Akka Streams API
