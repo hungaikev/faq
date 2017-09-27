@@ -112,7 +112,54 @@ For ```mapAsyncUnordered``` - See more in the [Java documentation](http://doc.ak
 
 ### 4. How to do Throttling in Akka Streams. 
 
-See more in the Java documentation or the Scala documentation.
+When building a streaming application and the upstream exceeds the specified rate the ```throttle``` element can 
+fail the stream or shape the stream by pack pressuring. Throttling with Akka Streams API is as easy as adding a ```throttle``` element and add specific number of elements per time unit. 
+
+```scala
+
+  implicit val system = ActorSystem()
+  implicit val materializer = ActorMaterializer()
+  implicit val ec = system.dispatcher
+
+
+
+  val throttleGraph = Source(1 to 1000000)
+     .map(n => s"I am number $n")
+     .throttle(elements = 1, per = 1 second, maximumBurst = 1, mode = ThrottleMode.shaping)
+     .runWith(Sink.foreach(println))
+     .onComplete(_ => system.terminate())
+
+```
+
+Once the upper bound has been reached the parameter ```maximumBurst``` can be used to allow the client to send a 
+burst of messages  while still respecting the ```throttle```
+
+```scala
+
+  implicit val system = ActorSystem()
+  implicit val materializer = ActorMaterializer()
+  implicit val ec = system.dispatcher
+
+
+
+
+def writeToDB(batch: Seq[Int]): Future[Unit] =
+  Future {
+    println(s"Writing  ${batch.size} elements to the Database using this thread ->  ${Thread.currentThread().getName}")
+  }
+
+
+  val throttlerGraph2 = Source(1 to 10000)
+    .grouped(10)
+    .throttle(elements = 10, per = 1 second, maximumBurst = 10, ThrottleMode.shaping)
+    .mapAsync(10)(writeToDB)
+    .runWith(Sink.ignore)
+    .onComplete(_ => system.terminate())
+
+
+```
+
+See more in the [Java documentation](http://doc.akka.io/docs/akka/current/java/stream/stages-overview.html#throttle) or the [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stages-overview.html#throttle).
 
 ### 5. How to do Error handling and recovery. 
 
