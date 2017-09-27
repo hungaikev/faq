@@ -106,8 +106,6 @@ If downstream order of elements is not important Akka Streams API provides ````m
 
 ```
 
-
-
 For ```mapAsync``` - See more in the [Java documentation](http://doc.akka.io/docs/akka/current/java/stream/stages-overview.html#mapasync ) or the [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stages-overview.html#mapasync ). 
 
 For ```mapAsyncUnordered``` - See more in the [Java documentation](http://doc.akka.io/docs/akka/current/java/stream/stages-overview.html#mapasyncunordered ) or the [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stages-overview.html#mapasyncunordered).
@@ -123,7 +121,6 @@ Failures vs Error handling in Akka Streams (What is an error and what is a failu
 - Using RestartFlow in a Stream.
 
 - I think a nice guidelines how to decide is to split your exceptions into Errors and Failures. 
-
 
 See more in the Java documentation or the Scala documentation.
 
@@ -167,6 +164,12 @@ Choosing which stage can be performed in parallel requires a good understanding 
     .runWith(Sink.ignore)
     .onComplete(_ => system.terminate())
 
+```
+
+Observe the threads in both. 
+
+```scala
+
 
   val concurrentGraph = Source(1 to 100000)
     .via(myStage("A")).async
@@ -176,6 +179,7 @@ Choosing which stage can be performed in parallel requires a good understanding 
     .runWith(Sink.ignore)
     .onComplete(_ => system.terminate())
  
+
 ```
 
 
