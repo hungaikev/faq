@@ -1,4 +1,5 @@
 ## FAQ  IDEAS
+*************************************************
 
 ### 1. Using a dedicated dispatcher to run a stream.
 
