@@ -1,10 +1,7 @@
 ## FAQ  IDEAS
 
-### 1. Using a dedicated dispatcher to run a stream.
 
-See more in the Akka Streams documentation on Dispatchers (Java/Scala) 
-
-### 2. Batching  in Akka Streams. 
+### 1. Batching  in Akka Streams. 
 
 This is a common pattern we see with streaming data. Basically you have a stream of elements and you need to group them together. 
 It usually proves to be handy when you need to perform an operation that is more efficient in batch ie 
@@ -50,7 +47,7 @@ For ```grouped``` - See more in the [Java documentation](http://doc.akka.io/docs
 
 For ```groupedWithin``` - See more in the [Java documentation](http://doc.akka.io/docs/akka/current/java/stream/stages-overview.html#grouped ) or the [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stages-overview.html#groupedwithin). 
 
-### 3. How to do Rate Limiting in Akka Streams. 
+### 2. How to do Rate Limiting in Akka Streams. 
 
 In certain scenarios it is important to limit the number of concurrent requests to other services, to avoid overwhelming these services and degrade performance.
 Sometimes you need to maintain service level agreements, particularly when streams are unbounded and the message rates are dynamic. 
@@ -110,7 +107,7 @@ For ```mapAsync``` - See more in the [Java documentation](http://doc.akka.io/doc
 
 For ```mapAsyncUnordered``` - See more in the [Java documentation](http://doc.akka.io/docs/akka/current/java/stream/stages-overview.html#mapasyncunordered ) or the [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stages-overview.html#mapasyncunordered).
 
-### 4. How to do Throttling in Akka Streams. 
+### 3. How to do Throttling in Akka Streams. 
 
 When building a streaming application and the upstream exceeds the specified rate the ```throttle``` element can 
 fail the stream or shape the stream by pack pressuring. Throttling with Akka Streams API is as easy as adding a ```throttle``` element and add specific number of elements per time unit. 
@@ -161,21 +158,44 @@ def writeToDB(batch: Seq[Int]): Future[Unit] =
 
 See more in the [Java documentation](http://doc.akka.io/docs/akka/current/java/stream/stages-overview.html#throttle) or the [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stages-overview.html#throttle).
 
-### 5. How to do Error handling and recovery. 
+### 4. Asynchronous Computations.
 
-Failures vs Error handling in Akka Streams (What is an error and what is a failure)
+In certain situations where we need  an asynchronous operation with back pressure handled. We use
+```mapAsync```  or ```mapAsyncUnordered``` depending on whether ordering for the elements is required or not. 
+```mapAsync``` takes a parallelism parameter and a function returning a ```Future```. The ```parallelism``` parameter 
+allows us to specify how many simultaneous operations are allowed. 
 
-- Using RestartFlow in a Stream.
+Performing asynchronous computations with Akka Streams API is as easy as adding the ```mapAsync``` or ```mapAsyncUnordered``` to a stage on the stream. 
 
-- I think a nice guidelines how to decide is to split your exceptions into Errors and Failures. 
 
-See more in the Java documentation or the Scala documentation.
+```scala
 
-### 6. Retry logic in Akka streams. 
+  implicit val system = ActorSystem()
+  implicit val materializer = ActorMaterializer()
+  implicit val ec = system.dispatcher
 
-See more in the Java documentation or the Scala documentation.
+  def writeToKafka(batch: Seq[Int]): Future[Unit] =
+    Future {
+      println(s"Writing  ${batch.size} elements to Kafka using this thread ->  ${Thread.currentThread().getName}")
+    }
 
-### 7. Concurrency in Akka Streams.
+
+  val mapAsyncStage = Source(1 to 1000000)
+    .grouped(100)
+    .mapAsync(10)(writeToKafka)
+    .runWith(Sink.ignore)
+    .onComplete(_ => system.terminate())
+
+```
+
+
+For ```mapAsync``` - See more in the [Java documentation](http://doc.akka.io/docs/akka/current/java/stream/stages-overview.html#mapasync ) or the [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stages-overview.html#mapasync ). 
+
+For ```mapAsyncUnordered``` - See more in the [Java documentation](http://doc.akka.io/docs/akka/current/java/stream/stages-overview.html#mapasyncunordered ) or the [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stages-overview.html#mapasyncunordered).
+
+
+
+### 5. Concurrency in Akka Streams.
 
 To construct efficient, scalable and low -latency streaming data systems, it is very important to perform tasks concurrently. 
 
@@ -232,6 +252,21 @@ Observe the threads in both.
 
 See more in the [Java documentation](http://doc.akka.io/docs/akka/current/java/stream/stream-flows-and-basics.html#operator-fusion) or the [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stream-flows-and-basics.html#operator-fusion).
 
+
+### 6. How to do Error handling and recovery. 
+
+Failures vs Error handling in Akka Streams (What is an error and what is a failure)
+
+- Using RestartFlow in a Stream.
+
+- I think a nice guidelines how to decide is to split your exceptions into Errors and Failures. 
+
+See more in the Java documentation or the Scala documentation.
+
+### 7. Retry logic in Akka streams. 
+
+See more in the Java documentation or the Scala documentation.
+
 ### 8. Flattening a stream.
 
 See more in the Java documentation or the Scala documentation.
@@ -244,38 +279,7 @@ See more in the Java documentation or the Scala documentation.
 
 See more in the Java documentation or the Scala documentation.
 
-### 11. Asynchronous Computations.
+### 11. Using a dedicated dispatcher to run a stream.
 
-In certain situations where we need  an asynchronous operation with back pressure handled. We use
-```mapAsync```  or ```mapAsyncUnordered``` depending on whether ordering for the elements is required or not. 
-```mapAsync``` takes a parallelism parameter and a function returning a ```Future```. The ```parallelism``` parameter 
-allows us to specify how many simultaneous operations are allowed. 
-
-Performing asynchronous computations with Akka Streams API is as easy as adding the ```mapAsync``` or ```mapAsyncUnordered``` to a stage on the stream. 
-
-
-```scala
-
-  implicit val system = ActorSystem()
-  implicit val materializer = ActorMaterializer()
-  implicit val ec = system.dispatcher
-
-  def writeToKafka(batch: Seq[Int]): Future[Unit] =
-    Future {
-      println(s"Writing  ${batch.size} elements to Kafka using this thread ->  ${Thread.currentThread().getName}")
-    }
-
-
-  val mapAsyncStage = Source(1 to 1000000)
-    .grouped(100)
-    .mapAsync(10)(writeToKafka)
-    .runWith(Sink.ignore)
-    .onComplete(_ => system.terminate())
-
-```
-
-
-For ```mapAsync``` - See more in the [Java documentation](http://doc.akka.io/docs/akka/current/java/stream/stages-overview.html#mapasync ) or the [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stages-overview.html#mapasync ). 
-
-For ```mapAsyncUnordered``` - See more in the [Java documentation](http://doc.akka.io/docs/akka/current/java/stream/stages-overview.html#mapasyncunordered ) or the [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stages-overview.html#mapasyncunordered).
+See more in the Akka Streams documentation on Dispatchers (Java/Scala) 
 
