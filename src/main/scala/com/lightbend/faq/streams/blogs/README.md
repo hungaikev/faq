@@ -1,5 +1,9 @@
 
 
+All of the code in the post assumes the akka-stream artifact of at least version 2.5.4 to be present, 
+and the following code implicitly being present in all samples. 
+
+
 #### Using Akka Streams for small/moderate scale ETL or simple processing pipeline
  
  A small/moderate scale ETL or simple processing pipeline.Akka Streams is among the best tools for data cleaning--  the graph dsl is so easy to code with and reason about.
@@ -22,18 +26,10 @@
 #### Testing streaming-data systems
 
 I often find myself writing tests to validate the outputs of streams, be they data transformations, writes to a database,
-or updates to intermediate streaming-data calculations. 
+or updates to intermediate streaming-data calculations. These tests focus on the business logic and the correctness of the output. 
 
-These tests focus on the business logic and the correctness of the output. 
-
-But what if no elements are passed through the stream within the expected time frame, 
-perhaps the assertions in the test are never even applied? Idle timeouts are great for codifying and asserting expectations regarding messaging latency, 
+But what if no elements are passed through the stream within the expected time frame, perhaps the assertions in the test are never even applied? Idle timeouts are great for codifying and asserting expectations regarding messaging latency, 
 testing for this in addition to the correctness of the output, when designing complex functional tests for a distributed system
-
-
-
-
-
 
 
 

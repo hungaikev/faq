@@ -215,6 +215,19 @@ For ```Sink```
 
 
 
+Streams do not run on the caller thread, instead they run on a different thread in the background, without blocking the caller
+
+The default behaviour of Akka Streams is to put all computations of a graph (where possible) in the same single threaded "island"
+
+Stream stages usually share the same thread unless they are explicitly demarcated from each other by an asynchronous boundary (which can be added by calling ```.async``` between the stages we want to separate)
+
+Stages demarcated by ```.async``` boundaries might run concurrently with each other. 
+
+Stages do not run a dedicated thread but they borrow from one common pool for a short period. 
+
+A stage that has an asynchronous upstream pulls from a buffer and not directly from the upstream Publisher, and it is the buffer that requests new elements once a certain number of elements have been taken out. 
+The buffering is handled automatically for you. 
+
 
 
 
