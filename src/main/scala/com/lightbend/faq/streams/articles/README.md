@@ -93,17 +93,17 @@ See more in the Java documentation or the Scala documentation.
 
 ### 11. Asynchronous Computations.
 
-In certain situations where we need need an asynchronous operation with back pressure handled. We use
+In certain situations where we need  an asynchronous operation with back pressure handled. We use
 ```mapAsync```  or ```mapAsyncUnordered``` depending on whether ordering for the elements is required or not. 
 ```mapAsync``` takes a parallelism parameter and a function returning a ```Future```. The ```parallelism``` parameter 
 allows us to specify how many simultaneous operations are allowed. 
 
-Performing asynchronous computations with Akka Streams API is as easy as adding the ```mapAsync``` or ```mapAsyncUnordered``` graph to a stage on the stream. 
+Performing asynchronous computations with Akka Streams API is as easy as adding the ```mapAsync``` or ```mapAsyncUnordered``` to a stage on the stream. 
 
 
 ```scala
 
-implicit val system = ActorSystem()
+  implicit val system = ActorSystem()
   implicit val materializer = ActorMaterializer()
   implicit val ec = system.dispatcher
 
