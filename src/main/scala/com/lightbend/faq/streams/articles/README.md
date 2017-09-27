@@ -52,6 +52,8 @@ For ```groupedWithin``` - See more in the [Java documentation](http://doc.akka.i
 
 ### 3. How to do Rate Limiting in Akka Streams. 
 
+
+
 See more in the Java documentation or the Scala documentation.
 
 ### 4. How to do Throttling in Akka Streams. 
@@ -91,4 +93,36 @@ See more in the Java documentation or the Scala documentation.
 
 ### 11. Asynchronous Computations.
 
-See more in the Java documentation or the Scala documentation.
+In certain situations where we need need an asynchronous operation with back pressure handled. We use
+```mapAsync```  or ```mapAsyncUnordered``` depending on whether ordering for the elements is required or not. 
+```mapAsync``` takes a parallelism parameter and a function returning a ```Future```. The ```parallelism``` parameter 
+allows us to specify how many simultaneous operations are allowed. 
+
+Performing asynchronous computations with Akka Streams API is as easy as adding the ```mapAsync``` or ```mapAsyncUnordered``` graph to a stage on the stream. 
+
+
+```scala
+
+implicit val system = ActorSystem()
+  implicit val materializer = ActorMaterializer()
+  implicit val ec = system.dispatcher
+
+  def writeToKafka(batch: Seq[Int]): Future[Unit] =
+    Future {
+      println(s"Writing  ${batch.size} elements to Kafka using this thread ->  ${Thread.currentThread().getName}")
+    }
+
+
+  val mapAsyncStage = Source(1 to 1000000)
+    .grouped(100)
+    .mapAsync(10)(writeToKafka)
+    .runWith(Sink.ignore)
+    .onComplete(_ => system.terminate())
+
+```
+
+
+For ```mapAsync``` - See more in the [Java documentation](http://doc.akka.io/docs/akka/current/java/stream/stages-overview.html#mapasync ) or the [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stages-overview.html#mapasync ). 
+
+For ```mapAsyncUnordered``` - See more in the [Java documentation](http://doc.akka.io/docs/akka/current/java/stream/stages-overview.html#mapasyncunordered ) or the [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stages-overview.html#mapasyncunordered).
+
