@@ -52,9 +52,65 @@ For ```groupedWithin``` - See more in the [Java documentation](http://doc.akka.i
 
 ### 3. How to do Rate Limiting in Akka Streams. 
 
+In certain scenarios it is important to limit the number of concurrent requests to other services, to avoid overwhelming these services and degrade performance.
+Sometimes you need to maintain service level agreements, particularly when streams are unbounded and the message rates are dynamic. 
+
+In all this scenarios Akka Streams API provides a seamless way to do this with back pressure applied upstream. 
+
+The following example shows how to batch elements, then write the batched elements to a database, asynchronously, 
+limiting the number of outstanding requests to only 10. 
+
+```scala
+
+  implicit val system = ActorSystem()
+  implicit val materializer = ActorMaterializer()
+  implicit val ec = system.dispatcher
 
 
-See more in the Java documentation or the Scala documentation.
+  def writeToDB(batch: Seq[Int]): Future[Unit] =
+    Future {
+      println(s"Writing  ${batch.size} elements to the Database using this thread ->  ${Thread.currentThread().getName}")
+    }
+
+
+  val rateLimitedGraph = Source(1 to 100000)
+    .groupedWithin(100, 100.millis)
+    .mapAsync(10)(writeToDB)
+    .runWith(Sink.ignore)
+    .onComplete(_ => system.terminate())
+
+```
+
+
+The above example preserves the order of the elements downstream which can be important depending on the application. 
+If downstream order of elements is not important Akka Streams API provides ````mapAsyncUnordered````
+
+```scala
+
+  implicit val system = ActorSystem()
+  implicit val materializer = ActorMaterializer()
+  implicit val ec = system.dispatcher
+
+
+  def writeToDB(batch: Seq[Int]): Future[Unit] =
+    Future {
+      println(s"Writing  ${batch.size} elements to the Database using this thread ->  ${Thread.currentThread().getName}")
+    }
+
+
+  val rateLimitedGraphUnordered = Source(1 to 100000)
+    .groupedWithin(100, 100.millis)
+    .mapAsyncUnordered(10)(writeToDB)
+    .runWith(Sink.ignore)
+    .onComplete(_ => system.terminate())
+
+```
+
+
+
+For ```mapAsync``` - See more in the [Java documentation](http://doc.akka.io/docs/akka/current/java/stream/stages-overview.html#mapasync ) or the [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stages-overview.html#mapasync ). 
+
+For ```mapAsyncUnordered``` - See more in the [Java documentation](http://doc.akka.io/docs/akka/current/java/stream/stages-overview.html#mapasyncunordered ) or the [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stages-overview.html#mapasyncunordered).
 
 ### 4. How to do Throttling in Akka Streams. 
 
@@ -101,9 +157,9 @@ Choosing which stage can be performed in parallel requires a good understanding 
       index
     }
 
-//Run one Runnable graph at a time to see the difference. 
+//Run one Runnable graph at a time to see the difference. Observe the threads in both.  
 
-  val normalSource = Source(1 to 100000)
+  val normalGraph = Source(1 to 100000)
     .via(myStage("A"))
     .via(myStage("B"))
     .via(myStage("C"))
@@ -112,7 +168,7 @@ Choosing which stage can be performed in parallel requires a good understanding 
     .onComplete(_ => system.terminate())
 
 
-  val concurrentSource = Source(1 to 100000)
+  val concurrentGraph = Source(1 to 100000)
     .via(myStage("A")).async
     .via(myStage("B")).async
     .via(myStage("C")).async

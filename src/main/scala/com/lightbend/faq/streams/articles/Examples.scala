@@ -18,55 +18,81 @@ object Examples extends App {
   implicit val ec = system.dispatcher
 
 
+  def writeToDB(batch: Seq[Int]): Future[Unit] =
+    Future {
+      println(s"Writing  ${batch.size} elements to the Database using this thread ->  ${Thread.currentThread().getName}")
+    }
+
+
+  val rateLimitedGraph = Source(1 to 100000)
+    .groupedWithin(100, 100.millis)
+    .mapAsync(10)(writeToDB)
+    .runWith(Sink.ignore)
+    .onComplete(_ => system.terminate())
+
+
+
+  /*
+
+
+  val rateLimitedGraphUnordered = Source(1 to 100000)
+    .groupedWithin(100, 100.millis)
+    .mapAsyncUnordered(10)(writeToDB)
+    .runWith(Sink.ignore)
+    .onComplete(_ => system.terminate())
+
+
   def myStage(name: String): Flow[Int,Int,NotUsed] =
     Flow[Int].map { index =>
       println(s"Stage $name is processing $index using ${Thread.currentThread().getName}")
       index
     }
 
-  val normalSource = Source(1 to 1000)
-    .via(myStage("A"))
-    .via(myStage("B"))
-    .via(myStage("C"))
-    .via(myStage("D"))
-    .runWith(Sink.ignore)
-    .onComplete(_ => system.terminate())
 
 
-  val concurrentSource = Source(1 to 100000)
-    .via(myStage("A")).async
-    .via(myStage("B")).async
-    .via(myStage("C")).async
-    .via(myStage("D")).async
-    .runWith(Sink.ignore)
-    .onComplete(_ => system.terminate())
+ val normalGraph = Source(1 to 1000)
+   .via(myStage("A"))
+   .via(myStage("B"))
+   .via(myStage("C"))
+   .via(myStage("D"))
+   .runWith(Sink.ignore)
+   .onComplete(_ => system.terminate())
 
 
-  /*
-  def writeToKafka(batch: Seq[Int]): Future[Unit] =
-    Future {
-      println(s"Writing  ${batch.size} elements to Kafka using this thread ->  ${Thread.currentThread().getName}")
-    }
+ val concurrentGraph = Source(1 to 100000)
+   .via(myStage("A")).async
+   .via(myStage("B")).async
+   .via(myStage("C")).async
+   .via(myStage("D")).async
+   .runWith(Sink.ignore)
+   .onComplete(_ => system.terminate())
 
 
-  val mapAsyncStage = Source(1 to 1000000)
-    .grouped(100)
-    .mapAsync(10)(writeToKafka)
-    .runWith(Sink.ignore)
-    .onComplete(_ => system.terminate())
 
-  val groupedWithinExample =
-    Source(1 to 100000)
-      .groupedWithin(100, 100.millis)
-      .map(elements  => s"Processing ${elements.size} elements")
-      .runForeach(println)
-      .onComplete(_ => system.terminate())
+ def writeToKafka(batch: Seq[Int]): Future[Unit] =
+   Future {
+     println(s"Writing  ${batch.size} elements to Kafka using this thread ->  ${Thread.currentThread().getName}")
+   }
 
-  val groupedExample =
-    Source(1 to 1000000)
-      .grouped(100)
-      .runForeach(println)
-      .onComplete(_ => system.terminate())
+
+ val mapAsyncStage = Source(1 to 1000000)
+   .grouped(100)
+   .mapAsync(10)(writeToKafka)
+   .runWith(Sink.ignore)
+   .onComplete(_ => system.terminate())
+
+ val groupedWithinExample =
+   Source(1 to 100000)
+     .groupedWithin(100, 100.millis)
+     .map(elements  => s"Processing ${elements.size} elements")
+     .runForeach(println)
+     .onComplete(_ => system.terminate())
+
+ val groupedExample =
+   Source(1 to 1000000)
+     .grouped(100)
+     .runForeach(println)
+     .onComplete(_ => system.terminate())
 */
 
 
