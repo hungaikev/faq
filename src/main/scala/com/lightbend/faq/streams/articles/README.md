@@ -8,9 +8,49 @@ See more in the Akka Streams documentation on Dispatchers (Java/Scala)
 
 #### 2. Batching  in Akka Streams. 
 
-What is the best practice to stream data from a large file into a Cassandra table?
+This is a common pattern we see with streaming data. Basically you have a stream of elements and you need to group them together. 
+It usually proves to be handy when you need to perform an operation that is more efficient in batch ie 
+when committing data to a database, a message queue or write to disk. It is common to write the data in batch rather 
+than writing a single piece of data at a time in order to gain superior performance. 
 
-See more in the Java documentation or the Scala documentation.
+Grouping messages with Akka Streams API is as easy as adding a ```grouped``` element. 
+
+```scala
+
+  implicit val system = ActorSystem()
+  implicit val materializer = ActorMaterializer()
+  implicit val ec = system.dispatcher
+
+  val groupedExample =
+    Source(1 to 100000)
+      .grouped(100)
+      .runForeach(println)
+      .onComplete(_ => system.terminate())
+
+```
+
+Grouping often introduces an unacceptable latency. To address this Akka Streams API has ```groupedWithin``` to group elements 
+but also emit elements within a bounded time frame, even if the maximum number of elements has not been satisfied. This operation takes a duration
+and batches together the number of elements you specified or as many elements received during the specified duration. 
+
+```scala
+
+   implicit val system = ActorSystem()
+   implicit val materializer = ActorMaterializer()
+   implicit val ec = system.dispatcher
+ 
+   val groupedWithinExample =
+     Source(1 to 100000)
+       .groupedWithin(100, 100.millis)
+       .map(elements  => s"Processing ${elements.size} elements")
+       .runForeach(println)
+       .onComplete(_ => system.terminate())
+
+```
+
+For ```grouped``` - See more in the [Java documentation](http://doc.akka.io/docs/akka/current/java/stream/stages-overview.html#grouped ) or the [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stages-overview.html#grouped ). 
+
+For ```groupedWithin``` - See more in the [Java documentation](http://doc.akka.io/docs/akka/current/java/stream/stages-overview.html#grouped ) or the [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stages-overview.html#groupedwithin). 
 
 #### 3. How to do Rate Limiting in Akka Streams. 
 
