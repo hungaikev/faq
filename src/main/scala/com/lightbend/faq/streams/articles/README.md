@@ -77,7 +77,53 @@ See more in the Java documentation or the Scala documentation.
 
 ### 7. Concurrency in Akka Streams.
 
-See more in the Java documentation or the Scala documentation.
+To construct efficient, scalable and low -latency streaming data systems, it is very important to perform tasks concurrently. 
+
+If you want elements in the stream to be processed in parallel, you must request Akka Streams directly because by default Akka Streams
+executes sequentially on a single thread. 
+
+To allow for parallel processing you will have to insert asynchronous boundaries manually into your flows and graphs by way of 
+adding ```Attributes.asyncBoundary``` using the method ```async``` on ```Source```, ```Sink``` and ```Flow``` to pieces that shall 
+communicate with the rest of the graph in an asynchronous fashion. 
+
+Choosing which stage can be performed in parallel requires a good understanding of the different operations performed on the pipeline. 
+
+```scala
+
+ implicit val system = ActorSystem()
+  implicit val materializer = ActorMaterializer()
+  implicit val ec = system.dispatcher
+
+
+  def myStage(name: String): Flow[Int,Int,NotUsed] =
+    Flow[Int].map { index =>
+      println(s"Stage $name is processing $index using ${Thread.currentThread().getName}")
+      index
+    }
+
+//Run one Runnable graph at a time to see the difference. 
+
+  val normalSource = Source(1 to 100000)
+    .via(myStage("A"))
+    .via(myStage("B"))
+    .via(myStage("C"))
+    .via(myStage("D"))
+    .runWith(Sink.ignore)
+    .onComplete(_ => system.terminate())
+
+
+  val concurrentSource = Source(1 to 100000)
+    .via(myStage("A")).async
+    .via(myStage("B")).async
+    .via(myStage("C")).async
+    .via(myStage("D")).async
+    .runWith(Sink.ignore)
+    .onComplete(_ => system.terminate())
+ 
+```
+
+
+See more in the [Java documentation](http://doc.akka.io/docs/akka/current/java/stream/stream-flows-and-basics.html#operator-fusion) or the [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stream-flows-and-basics.html#operator-fusion).
 
 ### 8. Flattening a stream.
 
