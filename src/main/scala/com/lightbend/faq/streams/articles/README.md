@@ -1,12 +1,10 @@
-### FAQ  IDEAS
+## FAQ  IDEAS
 
-### Common patterns
-
-#### 1. Using a dedicated dispatcher to run a stream.
+### 1. Using a dedicated dispatcher to run a stream.
 
 See more in the Akka Streams documentation on Dispatchers (Java/Scala) 
 
-#### 2. Batching  in Akka Streams. 
+### 2. Batching  in Akka Streams. 
 
 This is a common pattern we see with streaming data. Basically you have a stream of elements and you need to group them together. 
 It usually proves to be handy when you need to perform an operation that is more efficient in batch ie 
@@ -52,15 +50,15 @@ For ```grouped``` - See more in the [Java documentation](http://doc.akka.io/docs
 
 For ```groupedWithin``` - See more in the [Java documentation](http://doc.akka.io/docs/akka/current/java/stream/stages-overview.html#grouped ) or the [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stages-overview.html#groupedwithin). 
 
-#### 3. How to do Rate Limiting in Akka Streams. 
+### 3. How to do Rate Limiting in Akka Streams. 
 
 See more in the Java documentation or the Scala documentation.
 
-#### 4. How to do Throttling in Akka Streams. 
+### 4. How to do Throttling in Akka Streams. 
 
 See more in the Java documentation or the Scala documentation.
 
-#### 5. How to do Error handling and recovery. 
+### 5. How to do Error handling and recovery. 
 
 Failures vs Error handling in Akka Streams (What is an error and what is a failure)
 
@@ -71,26 +69,26 @@ Failures vs Error handling in Akka Streams (What is an error and what is a failu
 
 See more in the Java documentation or the Scala documentation.
 
-#### 6. Retry logic in Akka streams. 
+### 6. Retry logic in Akka streams. 
 
 See more in the Java documentation or the Scala documentation.
 
-#### 7. Concurrency in Akka Streams.
+### 7. Concurrency in Akka Streams.
 
 See more in the Java documentation or the Scala documentation.
 
-#### 8. Flattening a stream.
+### 8. Flattening a stream.
 
 See more in the Java documentation or the Scala documentation.
 
-#### 9. Terminating a stream.
+### 9. Terminating a stream.
 
 See more in the Java documentation or the Scala documentation.
 
-#### 10. Logging in a stream.
+### 10. Logging in a stream.
 
 See more in the Java documentation or the Scala documentation.
 
-#### 11. Asynchronous Computations.
+### 11. Asynchronous Computations.
 
 See more in the Java documentation or the Scala documentation.
