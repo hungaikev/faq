@@ -249,7 +249,6 @@ Observe the threads in both.
 
 ```
 
-
 See more in the [Java documentation](http://doc.akka.io/docs/akka/current/java/stream/stream-flows-and-basics.html#operator-fusion) or the [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stream-flows-and-basics.html#operator-fusion).
 
 
@@ -279,7 +278,4 @@ See more in the Java documentation or the Scala documentation.
 
 See more in the Java documentation or the Scala documentation.
 
-### 11. Using a dedicated dispatcher to run a stream.
-
-See more in the Akka Streams documentation on Dispatchers (Java/Scala) 
 

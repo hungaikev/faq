@@ -2,25 +2,60 @@ package com.lightbend.faq.streams.articles
 
 import akka.NotUsed
 import akka.actor.ActorSystem
-import akka.stream.{ActorMaterializer, ThrottleMode}
+import akka.stream.{ActorMaterializer, ActorMaterializerSettings, Supervision, ThrottleMode}
 import akka.stream.scaladsl.{Flow, Sink, Source}
 
 import scala.concurrent.Future
 import scala.concurrent.duration._
-
+import scala.concurrent.ExecutionContext.Implicits.global
 /**
   * Created by hungai on 27/09/2017.
   */
 object Examples extends App {
 
   implicit val system = ActorSystem()
-  implicit val materializer = ActorMaterializer()
-  implicit val ec = system.dispatcher
+
+  // implicit val ec = system.dispatcher
+
+  val decider: Supervision.Decider = {
+    case _: ArithmeticException => Supervision.Resume
+    case _ => Supervision.Stop
+  }
+
+
+  implicit val materializer = ActorMaterializer(
+    ActorMaterializerSettings(system).withSupervisionStrategy(decider)
+  )
+
+
+  val source = Source(0 to 5).map(100 / _)
+  val result = source.runWith(Sink.fold(0)(_ + _)).onComplete(_ => system.terminate())
+
+
+  /*
+
+
+    def myStage(name: String): Flow[Int,Int,NotUsed] =
+      Flow[Int].map { index =>
+        println(s"Stage $name is processing $index using ${Thread.currentThread().getName}")
+        index
+      }
+
+    //Run one Runnable graph at a time to see the difference. Observe the threads in both.
+
+    val concurrentGraph = Source(1 to 10)
+      .via(myStage("A")).async
+      .via(myStage("B")).async
+      .via(myStage("C")).async
+      .via(myStage("D"))
+      .runWith(Sink.ignore)
+      .onComplete(_ => system.terminate())
 
 
 
 
-def writeToDB(batch: Seq[Int]): Future[Unit] =
+
+  def writeToDB(batch: Seq[Int]): Future[Unit] =
   Future {
     println(s"Writing  ${batch.size} elements to the Database using this thread ->  ${Thread.currentThread().getName}")
   }
@@ -34,7 +69,7 @@ def writeToDB(batch: Seq[Int]): Future[Unit] =
     .onComplete(_ => system.terminate())
 
 
-  /*
+
 
     val throttleGraph = Source(1 to 1000000)
      .map(n => s"I am number $n")
@@ -43,7 +78,7 @@ def writeToDB(batch: Seq[Int]): Future[Unit] =
      .onComplete(_ => system.terminate())
 
 
-val rateLimitedGraph = Source(1 to 100000)
+  val rateLimitedGraph = Source(1 to 100000)
   .groupedWithin(100, 100.millis)
   .mapAsync(10)(writeToDB)
   .runWith(Sink.ignore)
@@ -51,14 +86,14 @@ val rateLimitedGraph = Source(1 to 100000)
 
 
 
-val rateLimitedGraphUnordered = Source(1 to 100000)
+  val rateLimitedGraphUnordered = Source(1 to 100000)
   .groupedWithin(100, 100.millis)
   .mapAsyncUnordered(10)(writeToDB)
   .runWith(Sink.ignore)
   .onComplete(_ => system.terminate())
 
 
-def myStage(name: String): Flow[Int,Int,NotUsed] =
+  def myStage(name: String): Flow[Int,Int,NotUsed] =
   Flow[Int].map { index =>
     println(s"Stage $name is processing $index using ${Thread.currentThread().getName}")
     index
@@ -66,50 +101,50 @@ def myStage(name: String): Flow[Int,Int,NotUsed] =
 
 
 
-val normalGraph = Source(1 to 1000)
- .via(myStage("A"))
- .via(myStage("B"))
- .via(myStage("C"))
- .via(myStage("D"))
- .runWith(Sink.ignore)
- .onComplete(_ => system.terminate())
+  val normalGraph = Source(1 to 1000)
+  .via(myStage("A"))
+  .via(myStage("B"))
+  .via(myStage("C"))
+  .via(myStage("D"))
+  .runWith(Sink.ignore)
+  .onComplete(_ => system.terminate())
 
 
-val concurrentGraph = Source(1 to 100000)
- .via(myStage("A")).async
- .via(myStage("B")).async
- .via(myStage("C")).async
- .via(myStage("D")).async
- .runWith(Sink.ignore)
- .onComplete(_ => system.terminate())
+  val concurrentGraph = Source(1 to 100000)
+  .via(myStage("A")).async
+  .via(myStage("B")).async
+  .via(myStage("C")).async
+  .via(myStage("D")).async
+  .runWith(Sink.ignore)
+  .onComplete(_ => system.terminate())
 
 
 
-def writeToKafka(batch: Seq[Int]): Future[Unit] =
- Future {
+  def writeToKafka(batch: Seq[Int]): Future[Unit] =
+  Future {
    println(s"Writing  ${batch.size} elements to Kafka using this thread ->  ${Thread.currentThread().getName}")
- }
+  }
 
 
-val mapAsyncStage = Source(1 to 1000000)
- .grouped(100)
- .mapAsync(10)(writeToKafka)
- .runWith(Sink.ignore)
- .onComplete(_ => system.terminate())
+  val mapAsyncStage = Source(1 to 1000000)
+  .grouped(100)
+  .mapAsync(10)(writeToKafka)
+  .runWith(Sink.ignore)
+  .onComplete(_ => system.terminate())
 
-val groupedWithinExample =
- Source(1 to 100000)
+  val groupedWithinExample =
+  Source(1 to 100000)
    .groupedWithin(100, 100.millis)
    .map(elements  => s"Processing ${elements.size} elements")
    .runForeach(println)
    .onComplete(_ => system.terminate())
 
-val groupedExample =
- Source(1 to 1000000)
+  val groupedExample =
+  Source(1 to 1000000)
    .grouped(100)
    .runForeach(println)
    .onComplete(_ => system.terminate())
-*/
+  */
 
 
 
