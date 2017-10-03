@@ -344,11 +344,7 @@ This is usually a good place to add logging messages or trigger some follow-up a
     .runWith(Sink.foreach(println))
 ```
 
-See more in the Java documentation or the Scala documentation.
-
-### 9. Logging in a stream.
-
-See more in the Java documentation or the Scala documentation.
+See more in the [Java documentation](http://doc.akka.io/docs/akka/current/java/stream/stages-overview.html#watchtermination) or the [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stages-overview.html#watchtermination).
 
 
 
