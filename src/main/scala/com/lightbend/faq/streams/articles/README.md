@@ -107,7 +107,7 @@ For ```mapAsync``` - See more in the [Java documentation](http://doc.akka.io/doc
 
 For ```mapAsyncUnordered``` - See more in the [Java documentation](http://doc.akka.io/docs/akka/current/java/stream/stages-overview.html#mapasyncunordered ) or the [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stages-overview.html#mapasyncunordered).
 
-### 3. How to do Throttling in Akka Streams. 
+###  How to do Throttling in Akka Streams. 
 
 When building a streaming application and the upstream exceeds the specified rate the ```throttle``` element can 
 fail the stream or shape the stream by pack pressuring. Throttling with Akka Streams API is as easy as adding a ```throttle``` element and add specific number of elements per time unit. 
@@ -158,7 +158,7 @@ def writeToDB(batch: Seq[Int]): Future[Unit] =
 
 See more in the [Java documentation](http://doc.akka.io/docs/akka/current/java/stream/stages-overview.html#throttle) or the [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stages-overview.html#throttle).
 
-### 4. Asynchronous Computations.
+###  Asynchronous Computations.
 
 In certain situations where we need  an asynchronous operation with back pressure handled. We use
 ```mapAsync```  or ```mapAsyncUnordered``` depending on whether ordering for the elements is required or not. 
@@ -195,7 +195,7 @@ For ```mapAsyncUnordered``` - See more in the [Java documentation](http://doc.ak
 
 
 
-### 5. Concurrency in Akka Streams.
+###  Concurrency in Akka Streams.
 
 To construct efficient, scalable and low -latency streaming data systems, it is very important to perform tasks concurrently. 
 
@@ -252,7 +252,7 @@ Observe the threads in both.
 See more in the [Java documentation](http://doc.akka.io/docs/akka/current/java/stream/stream-flows-and-basics.html#operator-fusion) or the [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stream-flows-and-basics.html#operator-fusion).
 
 
-### 6. How to do Error handling and recovery. 
+###  How to do Error handling and recovery. 
 
 When developing applications we should not assume that there will be no unexpected issues. Akka provides a set of 
 supervision strategies to deal with errors that happens in actors. Akka streams is no different  
@@ -296,11 +296,8 @@ backoff supervision strategy starting a stage again when it fails each time with
 See more in the [Java documentation](http://doc.akka.io/docs/akka/current/java/stream/stream-error.html) or the [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stream-error.html).
 
 
-### 7. Flattening a stream.
 
-See more in the Java documentation or the Scala documentation.
-
-### 8. Terminating a stream.
+### Terminating a stream.
 
 Streams do not run on the caller thread, instead they run on a different thread in the background, without blocking the caller.
 Therefore we need to terminate the underlying actor system when the stream completes for the program to end. 
