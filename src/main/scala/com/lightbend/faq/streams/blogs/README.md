@@ -37,3 +37,9 @@ After getting started with actors and welcoming the benefits of this approach,
 it is not uncommon for people to encounter traditional concurrent-programming and distributed-systems 
 problems—related to flow control, out-of-memory exceptions, or poor performance—which can be somewhat discouraging. 
 This is usually when people discover the Akka Streams API
+
+### How to wrap a stream inside an actor and have the actor restart the entire stream on failure. 
+ 
+
+###  Retry logic in Akka streams. 
+

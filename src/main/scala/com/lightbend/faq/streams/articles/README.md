@@ -295,23 +295,58 @@ backoff supervision strategy starting a stage again when it fails each time with
 
 See more in the [Java documentation](http://doc.akka.io/docs/akka/current/java/stream/stream-error.html) or the [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stream-error.html).
 
-### 7. How to wrap a stream inside an actor and have the actor restart the entire stream on failure. 
+
+### 7. Flattening a stream.
+
+See more in the Java documentation or the Scala documentation.
+
+### 8. Terminating a stream.
+
+Streams do not run on the caller thread, instead they run on a different thread in the background, without blocking the caller.
+Therefore we need to terminate the underlying actor system when the stream completes for the program to end. 
+You can use the `Future` returned by `runWith` to terminate the actor system.
+
+```scala
  
+   implicit val system = ActorSystem()
+   implicit val materializer = ActorMaterializer()
+ 
+   implicit val ec = system.dispatcher
+ 
+   val source = Source(0 to 10)
+     .map(n => n * 2)
+     .runWith(Sink.foreach(println)) // returns a Future[Done]
+     .onComplete(_ => system.terminate())  // onComplete callback of the future
+
+ 
+```
+
+Akka Stream API also has a `watchForTermination` method that can be used to monitor stream termination both for success and failure cases.
+This is usually a good place to add logging messages or trigger some follow-up actions.
+
+```scala
+
+  implicit val system = ActorSystem()
+  implicit val materializer = ActorMaterializer()
+
+  implicit val ec = system.dispatcher
+
+  val source = Source(0 to 10)
+    .map(n => n * 2)
+    .watchTermination() { (_, done) =>
+      done.onComplete {
+        case Success(_) => println("Stream completed successfully")
+          system.terminate()
+        case Failure(error) => println(s"Stream failed with error ${error.getMessage}")
+          system.terminate()
+      }
+    }
+    .runWith(Sink.foreach(println))
+```
+
 See more in the Java documentation or the Scala documentation.
 
-### 8. Retry logic in Akka streams. 
-
-See more in the Java documentation or the Scala documentation.
-
-### 9. Flattening a stream.
-
-See more in the Java documentation or the Scala documentation.
-
-### 10. Terminating a stream.
-
-See more in the Java documentation or the Scala documentation.
-
-### 11. Logging in a stream.
+### 9. Logging in a stream.
 
 See more in the Java documentation or the Scala documentation.
 
