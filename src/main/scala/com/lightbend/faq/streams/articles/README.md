@@ -210,7 +210,7 @@ Choosing which stage can be performed in parallel requires a good understanding 
 
 ```scala
 
- implicit val system = ActorSystem()
+  implicit val system = ActorSystem()
   implicit val materializer = ActorMaterializer()
   implicit val ec = system.dispatcher
 
@@ -254,28 +254,66 @@ See more in the [Java documentation](http://doc.akka.io/docs/akka/current/java/s
 
 ### 6. How to do Error handling and recovery. 
 
-Failures vs Error handling in Akka Streams (What is an error and what is a failure)
+When developing applications we should not assume that there will be no unexpected issues. Akka provides a set of 
+supervision strategies to deal with errors that happens in actors. Akka streams is no different  
+and its error handling strategies were inspired by actor supervision strategies.
+ 
+There are three ways to handle exceptions in your application code: 
+ * Stop  - The stream is completed with failure
+ * Resume - The element is dropped and the stream continues
+ * Restart - The element is dropped and the stream continues after restarting the stage. Restarting the stage means that any accumulated state is cleared. 
 
-- Using RestartFlow in a Stream.
+Default supervision strategy for a stream can be defined on the settings of the materializer for the whole stream or for a particular stage. 
 
-- I think a nice guidelines how to decide is to split your exceptions into Errors and Failures. 
+```scala
+
+ implicit val system = ActorSystem()
+
+  implicit val ec = system.dispatcher
+
+  val decider: Supervision.Decider = {
+    case _: ArithmeticException =>
+      println("Dropping element because of the Arithmetic Exception (Division by zero)")
+      Supervision.Resume
+    case _ => Supervision.Stop
+  }
+
+
+  implicit val materializer = ActorMaterializer(
+    ActorMaterializerSettings(system).withSupervisionStrategy(decider)
+  )
+
+
+  val source = Source(0 to 5).map(100 / _)
+  val result = source.runWith(Sink.foreach(println)).onComplete(_ => system.terminate())
+
+```
+
+Akka Streams also provides a `RestarSource`, `RestartSink`, `RestartFlow` for implementing the so called exponential 
+backoff supervision strategy starting a stage again when it fails each time with a growing time delay between restarts. 
+
+
+See more in the [Java documentation](http://doc.akka.io/docs/akka/current/java/stream/stream-error.html) or the [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stream-error.html).
+
+### 7. How to wrap a stream inside an actor and have the actor restart the entire stream on failure. 
+ 
+See more in the Java documentation or the Scala documentation.
+
+### 8. Retry logic in Akka streams. 
 
 See more in the Java documentation or the Scala documentation.
 
-### 7. Retry logic in Akka streams. 
+### 9. Flattening a stream.
 
 See more in the Java documentation or the Scala documentation.
 
-### 8. Flattening a stream.
+### 10. Terminating a stream.
 
 See more in the Java documentation or the Scala documentation.
 
-### 9. Terminating a stream.
+### 11. Logging in a stream.
 
 See more in the Java documentation or the Scala documentation.
 
-### 10. Logging in a stream.
-
-See more in the Java documentation or the Scala documentation.
 
 

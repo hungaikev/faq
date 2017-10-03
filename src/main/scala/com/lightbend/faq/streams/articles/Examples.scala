@@ -7,7 +7,6 @@ import akka.stream.scaladsl.{Flow, Sink, Source}
 
 import scala.concurrent.Future
 import scala.concurrent.duration._
-import scala.concurrent.ExecutionContext.Implicits.global
 /**
   * Created by hungai on 27/09/2017.
   */
@@ -15,10 +14,12 @@ object Examples extends App {
 
   implicit val system = ActorSystem()
 
-  // implicit val ec = system.dispatcher
+  implicit val ec = system.dispatcher
 
   val decider: Supervision.Decider = {
-    case _: ArithmeticException => Supervision.Resume
+    case _: ArithmeticException =>
+      println("Dropping element because of the Arithmetic Exception (Division by zero)")
+      Supervision.Resume
     case _ => Supervision.Stop
   }
 
@@ -29,7 +30,7 @@ object Examples extends App {
 
 
   val source = Source(0 to 5).map(100 / _)
-  val result = source.runWith(Sink.fold(0)(_ + _)).onComplete(_ => system.terminate())
+  val result = source.runWith(Sink.foreach(println)).onComplete(_ => system.terminate())
 
 
   /*
