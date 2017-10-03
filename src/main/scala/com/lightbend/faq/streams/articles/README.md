@@ -1,7 +1,7 @@
 ## FAQ  IDEAS
 
 
-### 1. How to implement batching logic in Akka Streams 
+### How to implement batching logic in Akka Streams 
 
 A common request we see with streaming data is the need to take the stream of elements and group them together (i.e. committing data to a database, a message queue or disk). Batching is usually a more efficient and performant solution than writing a single piece of data at a time.
 
@@ -40,9 +40,9 @@ However, grouping often introduces an unacceptable latency. To address this, you
 
 For `grouped` - See more in the [Java](http://doc.akka.io/docs/akka/current/java/stream/stages-overview.html#grouped ) or [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stages-overview.html#grouped ). 
 
-For `groupedWithin` - See more in the [Java documentation](http://doc.akka.io/docs/akka/current/java/stream/stages-overview.html#grouped ) or the [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stages-overview.html#groupedwithin). 
+For `groupedWithin` - See more in the [Java](http://doc.akka.io/docs/akka/current/java/stream/stages-overview.html#grouped ) or the [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stages-overview.html#groupedwithin). 
 
-### 2. How to do Rate Limiting in Akka Streams. 
+###  How to do Rate Limiting in Akka Streams. 
 
 In certain scenarios it is important to limit the number of concurrent requests to other services, to avoid overwhelming these services and degrade performance.
 Sometimes you need to maintain service level agreements, particularly when streams are unbounded and the message rates are dynamic. 
@@ -75,7 +75,7 @@ limiting the number of outstanding requests to only 10.
 
 
 The above example preserves the order of the elements downstream which can be important depending on the application. 
-If downstream order of elements is not important Akka Streams API provides ````mapAsyncUnordered````
+If downstream order of elements is not important Akka Streams API provides `mapAsyncUnordered`
 
 ```scala
 
@@ -98,14 +98,14 @@ If downstream order of elements is not important Akka Streams API provides ````m
 
 ```
 
-For ```mapAsync``` - See more in the [Java documentation](http://doc.akka.io/docs/akka/current/java/stream/stages-overview.html#mapasync ) or the [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stages-overview.html#mapasync ). 
+For `mapAsync` - See more in the [Java](http://doc.akka.io/docs/akka/current/java/stream/stages-overview.html#mapasync ) or the [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stages-overview.html#mapasync ). 
 
-For ```mapAsyncUnordered``` - See more in the [Java documentation](http://doc.akka.io/docs/akka/current/java/stream/stages-overview.html#mapasyncunordered ) or the [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stages-overview.html#mapasyncunordered).
+For `mapAsyncUnordered` - See more in the [Java](http://doc.akka.io/docs/akka/current/java/stream/stages-overview.html#mapasyncunordered ) or the [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stages-overview.html#mapasyncunordered).
 
 ###  How to do Throttling in Akka Streams. 
 
-When building a streaming application and the upstream exceeds the specified rate the ```throttle``` element can 
-fail the stream or shape the stream by pack pressuring. Throttling with Akka Streams API is as easy as adding a ```throttle``` element and add specific number of elements per time unit. 
+When building a streaming application and the upstream exceeds the specified rate the `throttle` element can 
+fail the stream or shape the stream by pack pressuring. Throttling with Akka Streams API is as easy as adding a `throttle` element and add specific number of elements per time unit. 
 
 ```scala
 
@@ -123,8 +123,8 @@ fail the stream or shape the stream by pack pressuring. Throttling with Akka Str
 
 ```
 
-Once the upper bound has been reached the parameter ```maximumBurst``` can be used to allow the client to send a 
-burst of messages  while still respecting the ```throttle```
+Once the upper bound has been reached the parameter `maximumBurst` can be used to allow the client to send a 
+burst of messages  while still respecting the `throttle`
 
 ```scala
 
@@ -151,16 +151,16 @@ def writeToDB(batch: Seq[Int]): Future[Unit] =
 
 ```
 
-See more in the [Java documentation](http://doc.akka.io/docs/akka/current/java/stream/stages-overview.html#throttle) or the [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stages-overview.html#throttle).
+See more in the [Java](http://doc.akka.io/docs/akka/current/java/stream/stages-overview.html#throttle) or the [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stages-overview.html#throttle).
 
 ###  Asynchronous Computations.
 
 In certain situations where we need  an asynchronous operation with back pressure handled. We use
-```mapAsync```  or ```mapAsyncUnordered``` depending on whether ordering for the elements is required or not. 
-```mapAsync``` takes a parallelism parameter and a function returning a ```Future```. The ```parallelism``` parameter 
+`mapAsync`  or `mapAsyncUnordered` depending on whether ordering for the elements is required or not. 
+`mapAsync` takes a parallelism parameter and a function returning a `Future`. The `parallelism` parameter 
 allows us to specify how many simultaneous operations are allowed. 
 
-Performing asynchronous computations with Akka Streams API is as easy as adding the ```mapAsync``` or ```mapAsyncUnordered``` to a stage on the stream. 
+Performing asynchronous computations with Akka Streams API is as easy as adding the `mapAsync` or `mapAsyncUnordered` to a stage on the stream. 
 
 
 ```scala
@@ -184,9 +184,9 @@ Performing asynchronous computations with Akka Streams API is as easy as adding 
 ```
 
 
-For ```mapAsync``` - See more in the [Java documentation](http://doc.akka.io/docs/akka/current/java/stream/stages-overview.html#mapasync ) or the [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stages-overview.html#mapasync ). 
+For `mapAsync` - See more in the [Java](http://doc.akka.io/docs/akka/current/java/stream/stages-overview.html#mapasync ) or the [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stages-overview.html#mapasync ). 
 
-For ```mapAsyncUnordered``` - See more in the [Java documentation](http://doc.akka.io/docs/akka/current/java/stream/stages-overview.html#mapasyncunordered ) or the [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stages-overview.html#mapasyncunordered).
+For `mapAsyncUnordered` - See more in the [Java](http://doc.akka.io/docs/akka/current/java/stream/stages-overview.html#mapasyncunordered ) or the [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stages-overview.html#mapasyncunordered).
 
 
 
@@ -198,7 +198,7 @@ If you want elements in the stream to be processed in parallel, you must request
 executes sequentially on a single thread. 
 
 To allow for parallel processing you will have to insert asynchronous boundaries manually into your flows and graphs by way of 
-adding ```Attributes.asyncBoundary``` using the method ```async``` on ```Source```, ```Sink``` and ```Flow``` to pieces that shall 
+adding `Attributes.asyncBoundary` using the method `async` on `Source`, `Sink` and `Flow` to pieces that shall 
 communicate with the rest of the graph in an asynchronous fashion. 
 
 Choosing which stage can be performed in parallel requires a good understanding of the different operations performed on the pipeline. 
@@ -244,7 +244,7 @@ Observe the threads in both.
 
 ```
 
-See more in the [Java documentation](http://doc.akka.io/docs/akka/current/java/stream/stream-flows-and-basics.html#operator-fusion) or the [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stream-flows-and-basics.html#operator-fusion).
+See more in the [Java](http://doc.akka.io/docs/akka/current/java/stream/stream-flows-and-basics.html#operator-fusion) or the [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stream-flows-and-basics.html#operator-fusion).
 
 
 ###  How to do Error handling and recovery. 
@@ -254,9 +254,9 @@ supervision strategies to deal with errors that happens in actors. Akka streams 
 and its error handling strategies were inspired by actor supervision strategies.
  
 There are three ways to handle exceptions in your application code: 
- * Stop  - The stream is completed with failure
- * Resume - The element is dropped and the stream continues
- * Restart - The element is dropped and the stream continues after restarting the stage. Restarting the stage means that any accumulated state is cleared. 
+ * `Stop`  - The stream is completed with failure
+ * `Resume` - The element is dropped and the stream continues
+ * `Restart` - The element is dropped and the stream continues after restarting the stage. Restarting the stage means that any accumulated state is cleared. 
 
 Default supervision strategy for a stream can be defined on the settings of the materializer for the whole stream or for a particular stage. 
 
@@ -288,7 +288,7 @@ Akka Streams also provides a `RestarSource`, `RestartSink`, `RestartFlow` for im
 backoff supervision strategy starting a stage again when it fails each time with a growing time delay between restarts. 
 
 
-See more in the [Java documentation](http://doc.akka.io/docs/akka/current/java/stream/stream-error.html) or the [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stream-error.html).
+See more in the [Java](http://doc.akka.io/docs/akka/current/java/stream/stream-error.html) or the [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stream-error.html).
 
 
 
@@ -336,7 +336,7 @@ This is usually a good place to add logging messages or trigger some follow-up a
     .runWith(Sink.foreach(println))
 ```
 
-See more in the [Java documentation](http://doc.akka.io/docs/akka/current/java/stream/stages-overview.html#watchtermination) or the [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stages-overview.html#watchtermination).
+See more in the [Java](http://doc.akka.io/docs/akka/current/java/stream/stages-overview.html#watchtermination) or the [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stages-overview.html#watchtermination).
 
 
 
