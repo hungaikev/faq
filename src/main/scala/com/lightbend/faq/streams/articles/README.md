@@ -21,7 +21,7 @@ Using the Akka Streams API, grouping messages is as easy as adding a `grouped` e
 
 ```
 
-However, grouping often introduces an unacceptable latency. To address this, you can use the `groupedWithin` method to group elements within a bounded time frame. This operation takes two parameters, a maximum batch size *and* a batch cutoff time, which are used to batch together either the specified number of elements or as many elements as are received during the specified duration. Even if the maximum number of elements has not been satisfied, once the specified duration is reached the current grouping will be emitted.  
+However, grouping often introduces an unacceptable latency. To address this, you can use the `groupedWithin` method to group elements within a bounded time frame. This operation takes two parameters, a maximum batch size **and** a batch cutoff time, which are used to batch together either the specified number of elements or as many elements as are received during the specified duration. Even if the maximum number of elements has not been satisfied, once the specified duration is reached the current grouping will be emitted.  
 
 ```scala
 
