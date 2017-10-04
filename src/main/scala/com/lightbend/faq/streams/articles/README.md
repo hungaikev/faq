@@ -21,7 +21,7 @@ Using the Akka Streams API, grouping messages is as easy as adding a `grouped` e
 
 ```
 
-However, grouping often introduces an unacceptable latency. To address this, you can use the `groupedWithin` method to group elements within a bounded time frame. This operation takes two parameters, a maximum batch size *and* a batch cutoff time, which are used to batch together either the specified number of elements or as many elements as are received during the specified duration. Even if the maximum number of elements has not been satisfied, once the specified duration is reached the current grouping will be emitted.  
+However, grouping often introduces an unacceptable latency. To address this, you can use the `groupedWithin` method to group elements within a bounded time frame. This operation takes two parameters, a maximum batch size **and** a batch cutoff time, which are used to batch together either the specified number of elements or as many elements as are received during the specified duration. Even if the maximum number of elements has not been satisfied, once the specified duration is reached the current grouping will be emitted.  
 
 ```scala
 
@@ -44,13 +44,11 @@ For `groupedWithin` - See more in the [Java](http://doc.akka.io/docs/akka/curren
 
 ###  How to do Rate Limiting in Akka Streams. 
 
-In certain scenarios it is important to limit the number of concurrent requests to other services, to avoid overwhelming these services and degrade performance.
-Sometimes you need to maintain service level agreements, particularly when streams are unbounded and the message rates are dynamic. 
+In certain scenarios it is important to limit the number of concurrent requests to other services. For example, to avoid overwhelming the services and avoid performance degradation, or to maintain service level agreements. This is particularly important when streams are unbounded and the message rates are dynamic. 
 
-In all this scenarios Akka Streams API provides a seamless way to do this with back pressure applied upstream. 
+No matter the scenario, the Akka Streams API provides a seamless way to do this through back pressure applied upstream. 
 
-The following example shows how to batch elements, then write the batched elements to a database, asynchronously, 
-limiting the number of outstanding requests to only 10. 
+The following example shows how to batch elements, then asynchronously write the batched elements to a database, limiting the number of outstanding requests to only 10. 
 
 ```scala
 
@@ -59,10 +57,9 @@ limiting the number of outstanding requests to only 10.
   implicit val ec = system.dispatcher
 
 
-  def writeToDB(batch: Seq[Int]): Future[Unit] =
-    Future {
-      println(s"Writing  ${batch.size} elements to the Database using this thread ->  ${Thread.currentThread().getName}")
-    }
+  def writeToDB(batch: Seq[Int])= Future {
+    println(s"Writing ${batch.size} elements to the DB using thread '${Thread.currentThread().getName}'")
+  }
 
 
   val rateLimitedGraph = Source(1 to 100000)
@@ -73,34 +70,12 @@ limiting the number of outstanding requests to only 10.
 
 ```
 
+The above example preserves the order of the elements downstream, which can be important depending on the application. 
+If downstream order of elements is not important the Akka Streams API provides `mapAsyncUnordered`.
 
-The above example preserves the order of the elements downstream which can be important depending on the application. 
-If downstream order of elements is not important Akka Streams API provides `mapAsyncUnordered`
+For more on `mapAsync` see the [Java](http://doc.akka.io/docs/akka/current/java/stream/stages-overview.html#mapasync ) or [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stages-overview.html#mapasync ). 
 
-```scala
-
-  implicit val system = ActorSystem()
-  implicit val materializer = ActorMaterializer()
-  implicit val ec = system.dispatcher
-
-
-  def writeToDB(batch: Seq[Int]): Future[Unit] =
-    Future {
-      println(s"Writing  ${batch.size} elements to the Database using this thread ->  ${Thread.currentThread().getName}")
-    }
-
-
-  val rateLimitedGraphUnordered = Source(1 to 100000)
-    .groupedWithin(100, 100.millis)
-    .mapAsyncUnordered(10)(writeToDB)
-    .runWith(Sink.ignore)
-    .onComplete(_ => system.terminate())
-
-```
-
-For `mapAsync` - See more in the [Java](http://doc.akka.io/docs/akka/current/java/stream/stages-overview.html#mapasync ) or the [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stages-overview.html#mapasync ). 
-
-For `mapAsyncUnordered` - See more in the [Java](http://doc.akka.io/docs/akka/current/java/stream/stages-overview.html#mapasyncunordered ) or the [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stages-overview.html#mapasyncunordered).
+For more on `mapAsyncUnordered` see the [Java](http://doc.akka.io/docs/akka/current/java/stream/stages-overview.html#mapasyncunordered ) or [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stages-overview.html#mapasyncunordered).
 
 ###  How to do Throttling in Akka Streams. 
 
