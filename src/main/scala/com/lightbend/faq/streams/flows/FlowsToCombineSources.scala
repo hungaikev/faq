@@ -26,7 +26,8 @@ object FlowsToCombineSources extends App {
 
 
   /**
-    * Flow.zip -> Combines the incoming elements with elements from another Source
+    * Flow.zip -> Combines the incoming elements with elements from another Source.
+    *          -> Combines elements from each of multiple sources into tuples and passes the tuples downstream.
     *          -> Result is emitted as a tuple of both values
     */
 
