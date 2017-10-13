@@ -25,6 +25,7 @@ object FlowsToFilterElements extends App {
     */
   val source: Source[Int, NotUsed] = Source.unfold(0) {
     case value if value <= 100 => Some((value + 1, value))
+    case _ => None
   }
 
 
