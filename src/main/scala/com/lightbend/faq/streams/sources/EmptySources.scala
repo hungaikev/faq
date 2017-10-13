@@ -8,7 +8,7 @@ import akka.stream.scaladsl.{Sink, Source}
 /**
   * Created by hungai on 13/10/2017.
   */
-object EmptySources {
+object EmptySources extends  App {
 
   /**
     * Empty Sources
