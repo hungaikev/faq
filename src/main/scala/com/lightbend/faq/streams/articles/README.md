@@ -77,29 +77,26 @@ For more on `mapAsync` see the [Java](http://doc.akka.io/docs/akka/current/java/
 
 For more on `mapAsyncUnordered` see the [Java](http://doc.akka.io/docs/akka/current/java/stream/stages-overview.html#mapasyncunordered ) or [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stages-overview.html#mapasyncunordered).
 
-###  How to do Throttling in Akka Streams. 
+###  How to do throttling in Akka Streams 
 
 When building a streaming application and the upstream exceeds the specified rate the `throttle` element can 
-fail the stream or shape the stream by pack pressuring. Throttling with Akka Streams API is as easy as adding a `throttle` element and add specific number of elements per time unit. 
+fail the stream or shape the stream by back pressuring. Throttling with Akka Streams API is as easy as adding a `throttle` element and add specific number of elements per time unit. 
 
 ```scala
 
   implicit val system = ActorSystem()
   implicit val materializer = ActorMaterializer()
   implicit val ec = system.dispatcher
-
-
 
   val throttleGraph = Source(1 to 1000000)
      .map(n => s"I am number $n")
      .throttle(elements = 1, per = 1 second, maximumBurst = 1, mode = ThrottleMode.shaping)
      .runWith(Sink.foreach(println))
      .onComplete(_ => system.terminate())
-
 ```
 
 Once the upper bound has been reached the parameter `maximumBurst` can be used to allow the client to send a 
-burst of messages  while still respecting the `throttle`
+burst of messages while still respecting the `throttle`
 
 ```scala
 
@@ -107,14 +104,9 @@ burst of messages  while still respecting the `throttle`
   implicit val materializer = ActorMaterializer()
   implicit val ec = system.dispatcher
 
-
-
-
-def writeToDB(batch: Seq[Int]): Future[Unit] =
-  Future {
-    println(s"Writing  ${batch.size} elements to the Database using this thread ->  ${Thread.currentThread().getName}")
+  def writeToDB(batch: Seq[Int]) = Future {
+    println(s"Writing ${batch.size} elements to the DB using thread '${Thread.currentThread().getName}'")
   }
-
 
   val throttlerGraph2 = Source(1 to 10000)
     .grouped(10)
@@ -122,21 +114,18 @@ def writeToDB(batch: Seq[Int]): Future[Unit] =
     .mapAsync(10)(writeToDB)
     .runWith(Sink.ignore)
     .onComplete(_ => system.terminate())
-
-
 ```
 
-See more in the [Java](http://doc.akka.io/docs/akka/current/java/stream/stages-overview.html#throttle) or the [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stages-overview.html#throttle).
+For more on `throttle` see the [Java](http://doc.akka.io/docs/akka/current/java/stream/stages-overview.html#throttle) or [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stages-overview.html#throttle).
 
-###  Asynchronous Computations.
+###  How to execute streams asynchronously
 
-In certain situations where we need  an asynchronous operation with back pressure handled. We use
+In certain situations where there is need an asynchronous operation with back pressure handled. We use
 `mapAsync`  or `mapAsyncUnordered` depending on whether ordering for the elements is required or not. 
 `mapAsync` takes a parallelism parameter and a function returning a `Future`. The `parallelism` parameter 
 allows us to specify how many simultaneous operations are allowed. 
 
 Performing asynchronous computations with Akka Streams API is as easy as adding the `mapAsync` or `mapAsyncUnordered` to a stage on the stream. 
-
 
 ```scala
 
@@ -144,24 +133,21 @@ Performing asynchronous computations with Akka Streams API is as easy as adding 
   implicit val materializer = ActorMaterializer()
   implicit val ec = system.dispatcher
 
-  def writeToKafka(batch: Seq[Int]): Future[Unit] =
-    Future {
-      println(s"Writing  ${batch.size} elements to Kafka using this thread ->  ${Thread.currentThread().getName}")
-    }
-
+  def writeToKafka(batch: Seq[Int])= Future {
+      println(s"Writing ${batch.size} elements to Kafka using thread '${Thread.currentThread().getName}'")
+  }
 
   val mapAsyncStage = Source(1 to 1000000)
     .grouped(100)
     .mapAsync(10)(writeToKafka)
     .runWith(Sink.ignore)
     .onComplete(_ => system.terminate())
-
 ```
 
 
-For `mapAsync` - See more in the [Java](http://doc.akka.io/docs/akka/current/java/stream/stages-overview.html#mapasync ) or the [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stages-overview.html#mapasync ). 
+For more on `mapAsync` see the [Java](http://doc.akka.io/docs/akka/current/java/stream/stages-overview.html#mapasync ) or [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stages-overview.html#mapasync ). 
 
-For `mapAsyncUnordered` - See more in the [Java](http://doc.akka.io/docs/akka/current/java/stream/stages-overview.html#mapasyncunordered ) or the [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stages-overview.html#mapasyncunordered).
+For more on `mapAsyncUnordered` see the [Java](http://doc.akka.io/docs/akka/current/java/stream/stages-overview.html#mapasyncunordered ) or [Scala documentation](http://doc.akka.io/docs/akka/current/scala/stream/stages-overview.html#mapasyncunordered).
 
 
 
