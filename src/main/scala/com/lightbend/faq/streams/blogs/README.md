@@ -12,8 +12,7 @@ and the following code implicitly being present in all samples.
  
  Source[A] (read from file or DB) ~> Flow[A,B] (some transformation function) ~>  Flow[B,C] (by way of a RESTful request/response) ~> Flow[C,D] (graph query) ~> Sink[D] (to DB)
  
- Where Source might be 50,000 lines in a file or rows in a table. 
- 
+ Where Source might be 50,000 lines in a file or rows in a table.  §
  
  1) Read multiple files
  2) Transform and merge data into one record 
@@ -43,3 +42,5 @@ This is usually when people discover the Akka Streams API
 
 ###  Retry logic in Akka streams. 
 
+
+#### Deploy a play or akka application to aws (ec2 & elb) - gcp 

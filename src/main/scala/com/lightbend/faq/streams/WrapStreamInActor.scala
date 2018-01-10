@@ -46,7 +46,6 @@ object WrapStreamInActor extends App {
 
   }
 
-
   implicit val system = ActorSystem("printerSystem")
   implicit val mat = ActorMaterializer()
 

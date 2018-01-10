@@ -184,6 +184,29 @@ Akka streams are back pressured by default, but it is possible to alter this beh
 ```Kill Switches``` - This is an object used externally to stop the materialization of a stream. 
 
 
+With akka streams you construct a graph which describes your data processing pipeline (the `RunnableGraph`)
+
+This graph actually does nothing much until you `materialize` it. During materialization, the graph is validated to ensure sources and sinks have been connected and you haven't
+eg connected an output to more than one input. 
+
+If you are using the `ActorMaterializer` that's also when the various actors will process the messages get created. 
+
+As a side effect of all this construction you can get a value which is not part of the data processing pipeline but which may tell you something about the stream or 
+let you interact with it: the materialized value. 
+
+Many stages in the graph may have their own materialized value created upon construction of the graph.These tell you something about the 
+stage and it is up to you how you handle all of them together to give you information about the graph.  
+
+When you wire one stage to the next you can choose what to do with each each stage's materialized value using `Keep.left` or `Keep.right` or `Keep.both` or whatever combination function you choose. So 
+for instance, if you need something to do with the first stage's materialized value you will have to pipe that through the whole graph so that it gets created and returned (materialized) at the end. 
+
+More concretely one kind of materialized value could be a `Future[Done]`, which might indicate when your stream has processed all the elements that its going to and is complete either 
+successfully or with an exception. This `Future` is not part f the stream and is not sent through the stages, but does give you extra info about whats happening within the graph. 
+
+An example is a materialized value used through the `ActorPublisher` trait. This materialized an `ActorRef` to which I could 
+send messages and the result of that actors processing could be emitted into the rest of the stream. 
+
+
 ### List of ```Sources``` and  ```Sink``` methods that have a materialized value different than ```NotUsed```
 
 For ```Sources```
