@@ -19,6 +19,8 @@ libraryDependencies ++= {
   val akkaV       = "2.5.4"
   val akkaHttpV   = "10.0.1"
   val scalaTestV  = "3.0.0"
+  lazy val circeVersion = "0.9.0"
+  lazy val akkaJsonVersion = "1.20.0-RC1"
   Seq(
     "com.typesafe.akka" %% "akka-actor" % akkaV,
     "com.typesafe.akka" %% "akka-stream" % akkaV,
@@ -38,6 +40,10 @@ libraryDependencies ++= {
     "com.typesafe.akka" %% "akka-http-spray-json" % akkaHttpV,
     "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpV,
     "org.scalatest"     %% "scalatest" % scalaTestV % "test",
+    "io.circe" %% "circe-generic" % circeVersion,
+    "org.iq80.leveldb" % "leveldb" % "0.7",
+    "org.fusesource.leveldbjni" % "leveldbjni-all" % "1.8",
+    "de.heikoseeberger" %% "akka-http-circe" % akkaJsonVersion,
     "com.typesafe.akka" %% "akka-persistence-cassandra" % "0.23"
   )
 }
