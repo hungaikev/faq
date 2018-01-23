@@ -22,13 +22,17 @@ trait BlogService extends  AkkaConfiguration {
 
   def updatePost(id: PostId, content: PostContent): Future[MaybePost[PostUpdated]] = (blogEntity ? UpdatePost(id, content)).mapTo[MaybePost[PostUpdated]]
 
+  def getBlogs: Future[Map[PostId, PostContent]] = (blogEntity ? GetBlogs).mapTo[Map[PostId,PostContent]]
+
 }
 
 /**
   * HTTP routes for the BlogService API.
   */
 
-trait BlogRestApi extends RestApi with BlogService {
+trait BlogRestApi extends RestApi with BlogService  {
+
+  import PostId._
 
   override def route: Route =
     pathPrefix("api"/ "blog") {

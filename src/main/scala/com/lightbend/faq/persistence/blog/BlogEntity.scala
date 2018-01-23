@@ -38,6 +38,8 @@ object BlogEntity {
     def apply(): BlogState = BlogState(Map.empty)
   }
 
+  final case object GetBlogs
+
 
 }
 
@@ -85,6 +87,9 @@ class BlogEntity extends PersistentActor with ActorLogging {
         case Right(_) => handleEvent(PostUpdated(id, content)) pipeTo sender()
           ()
       }
+
+    case GetBlogs =>
+      sender() ! state.posts
   }
 
   override def receiveRecover: Receive = {
