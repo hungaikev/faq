@@ -32,8 +32,6 @@ trait BlogService extends  AkkaConfiguration {
 
 trait BlogRestApi extends RestApi with BlogService  {
 
-  import PostId._
-
   override def route: Route =
     pathPrefix("api"/ "blog") {
       (pathEndOrSingleSlash & post) {
@@ -65,5 +63,4 @@ trait BlogRestApi extends RestApi with BlogService  {
         }
       }
     }
-
 }
