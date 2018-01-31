@@ -44,6 +44,8 @@ libraryDependencies ++= {
     "org.iq80.leveldb" % "leveldb" % "0.7",
     "org.fusesource.leveldbjni" % "leveldbjni-all" % "1.8",
     "de.heikoseeberger" %% "akka-http-circe" % akkaJsonVersion,
+    "com.typesafe.akka" %% "akka-stream-kafka" % "0.18",
+    "org.apache.kafka"           % "kafka_2.12"           % "0.11.0.1",
     "com.typesafe.akka" %% "akka-persistence-cassandra" % "0.23"
   )
 }
