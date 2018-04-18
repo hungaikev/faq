@@ -39,7 +39,9 @@ libraryDependencies ++= {
     "com.typesafe.akka" %% "akka-http" % akkaHttpV,
     "com.typesafe.akka" %% "akka-http-spray-json" % akkaHttpV,
     "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpV,
+    "com.typesafe.akka" %% "akka-http-caching" % "10.1.0",
     "org.scalatest"     %% "scalatest" % scalaTestV % "test",
+    "org.typelevel" %% "cats-core" % "1.0.1",
     "io.circe" %% "circe-generic" % circeVersion,
     "org.iq80.leveldb" % "leveldb" % "0.7",
     "org.fusesource.leveldbjni" % "leveldbjni-all" % "1.8",
@@ -49,3 +51,5 @@ libraryDependencies ++= {
     "com.typesafe.akka" %% "akka-persistence-cassandra" % "0.23"
   )
 }
+
+scalacOptions += "-Ypartial-unification"
